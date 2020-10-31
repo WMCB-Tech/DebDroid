@@ -6,8 +6,8 @@ An Easy to use Debian Installer for Termux on Android without root
 Learn more about DebDroid with this [wiki](https://github.com/WMCB-Tech/DebDroid/wiki) \
 ***Updates in DebDroid are Frequent and it's recommended to watch this repo to get latest updates. We provide pre-releases but it's intended for Developers only. pre-releases can be deleted anytime***
 
-# Why DebDroid?
-Well it's a little brush off to other proot methods out there like andronix which it's good but poorly aware of the fact of Android Restrictions
+# What is DebDroid?
+Well it's a little brush off to other proot methods out there like andronix which it's good but poorly aware of the fact of Android Restrictions.
 DebDroid makes Linux Software integration to Android possible we made linux software work pre-fixed without patches and makes the containerization secure and
 well-integrated as possible
 
@@ -18,7 +18,7 @@ well-integrated as possible
 * No Rooting Required
 * Supports Desktop Environment (LXDE, LXQT, Mate, XFCE)
 * Test Harmful packages sandboxed without interfering of your Phone
-
+* Portability with Snapshots and Exports for your Development
 
 # Installation
 Installation is quite easy. follow the steps shown below:
