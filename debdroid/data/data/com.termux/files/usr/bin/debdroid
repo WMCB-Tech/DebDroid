@@ -1,5 +1,5 @@
 #!/data/data/com.termux/files/usr/bin/bash
-### DEBDROID v2.17.
+### DEBDROID v2.17-R2.
 ### Made By WMCB Tech @wmcbtech30
 ### This script should not be modified at some cases
 ### Dependencies Required
@@ -34,13 +34,13 @@ check-dlcache() {
 	if [ -e $HOME/.cache/dlcache.tar.xz ]; then
 		echo "Existing Image File Found. Skipping Download and Extracting the rootfs"
 		echo "Unpacking The Base System.... This may take a few minutes"
-		proot --link2symlink tar -xf $HOME/.cache/dlcache.tar.xz --exclude dev -C $ROOTFS > /dev/null 2>&1
+		proot --link2symlink -0 tar -xf $HOME/.cache/dlcache.tar.xz --exclude dev -C $ROOTFS > /dev/null 2>&1
 	else
 		echo "Downloading the Debian Image file....."
 		mkdir -p $HOME/.cache >/dev/null 2>&1 &&
 		wget "https://github.com/WMCB-Tech/AndronixOrigin/raw/master/Rootfs/Debian/${archurl}/debian-rootfs-${archurl}.tar.xz?raw=true" -O $HOME/.cache/dlcache.tar.xz &&
 		echo "Unpacking The Base System.... This may take a few minutes"
-		proot --link2symlink tar -xf $HOME/.cache/dlcache.tar.xz --exclude dev -C $ROOTFS > /dev/null 2>&1
+		proot --link2symlink -0 tar -xf $HOME/.cache/dlcache.tar.xz --exclude dev -C $ROOTFS > /dev/null 2>&1
 	fi
 }
 
