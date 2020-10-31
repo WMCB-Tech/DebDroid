@@ -32,7 +32,7 @@ Installation is quite easy. follow the steps shown below:
 1.) On termux, Type the following: \
 `pkg update -y`
 
-2.) Download the [file](https://github.com/WMCB-Tech/DebDroid/releases/download/v2.17/debdroid-2.17.deb) and place it to sdcard.
+2.) Download the [file](https://github.com/WMCB-Tech/DebDroid/releases/download/v2.17-R2/debdroid-2.17-R2.deb) and place it to sdcard.
 
 3.) Install the package by typing: \
 `apt install ./path/to/debdroid.deb` \
