@@ -79,7 +79,7 @@ Username: user \
 Password: password
 
 * Ubuntu 18.04 (ARM64): \
-<under const.>
+soon...
 
 Ubuntu 18.04 has a fully fledged desktop environment with Development Tools installed: \
 (git, nodejs, geany, gcc, bluefish, vs code, mate, chromium, synaptic)
