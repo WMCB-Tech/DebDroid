@@ -79,7 +79,7 @@ Username: user \
 Password: password
 
 * Ubuntu 18.04 (ARM64): \
-soon...
+https://drive.google.com/file/d/1pwXppEmd01q9SJFZ9NN1aT9bFZidYna-/view?usp=drivesdk
 
 Ubuntu 18.04 has a fully fledged desktop environment with Development Tools installed: \
 (git, nodejs, geany, gcc, bluefish, vs code, mate, chromium, synaptic)
