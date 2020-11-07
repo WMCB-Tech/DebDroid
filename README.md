@@ -18,7 +18,7 @@ well-integrated as possible. although this might be a messy technique but it mak
 * No Rooting Required
 * Supports Desktop Environment (LXDE, LXQT, Mate, XFCE)
 * Test Harmful packages sandboxed without interfering of your Phone
-* Sounds is Supported
+* Sounds Support (Beta)
 
 # Installation
 Installation is quite easy. follow the steps shown below:
