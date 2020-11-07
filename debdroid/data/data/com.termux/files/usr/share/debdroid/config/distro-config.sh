@@ -11,7 +11,7 @@ set -e -u
 ## Install Packages
 apt update
 apt upgrade -y
-apt install nano sudo busybox udisks2 dbus-x11 locales -y
+apt install nano sudo busybox udisks2 dbus-x11 locales pulseaudio -y
 apt autoremove -y
 apt clean
 
@@ -22,6 +22,7 @@ echo "export LD_PRELOAD=$(find /usr/lib -name libgcc_s.so.1)" > /etc/profile.d/w
 echo "Adding /sbin path for non-root users"
 echo "export PATH=/usr/local/bin:/usr/local/sbin:/usr/local/games:/bin:/sbin:/usr/bin:/usr/sbin:/usr/games" > /etc/profile.d/sbin.sh
 echo "export LANG=C.UTF-8" > /etc/profile.d/langenv.sh
+echo "export PULSE_SERVER=127.0.0.1" > /etc/profile.d/pulse.sh
 
 ## Configure udisks2 as if udisks2 interrupts apt
 echo ""
