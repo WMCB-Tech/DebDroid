@@ -19,6 +19,7 @@ well-integrated as possible
 * Supports Desktop Environment (LXDE, LXQT, Mate, XFCE)
 * Test Harmful packages sandboxed without interfering of your Phone
 * Portability with Snapshots and Exports for your Development
+* Sounds is Supported
 
 # Installation
 Installation is quite easy. follow the steps shown below:
