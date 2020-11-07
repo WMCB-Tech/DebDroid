@@ -1,9 +1,9 @@
 #!/data/data/com.termux/files/usr/bin/bash
-### DEBDROID v2.17-R2.
+### DEBDROID v2.18.
 ### Made By WMCB Tech @wmcbtech30
 ### This script should not be modified at some cases
 ### Dependencies Required
-### proot, tar, wget, dialog
+### proot, tar, wget, dialog, pulseaudio
 ###
 ### This script uses Andronix Resources as if debootstrap may fail the installation
 set -e -u
@@ -53,7 +53,7 @@ show_help(){
 	echo " --uninstall	Uninstalls a Debian Distribution"
 	echo " --launch	Launches Debian Distribution as Regular User"
 	echo " --launch-su	Launches Debian Distribution as Root"
-	echo " --no-shared	Launches Debian Distribution without host storage access"
+	echo " --isolated	Launches Debian Distribution without host storage access"
 	echo " --import	Imports the Debian Container Image"
 	echo " --export	Exports the Debian Container Image"
 	echo ""
@@ -123,9 +123,10 @@ launch() {
     		echo ""
 	else
     		echo "Cannot start Debian Container. Please install it using debdroid --install"
-		exit 2
+			exit 2
 	fi
 	unset LD_PRELOAD
+	start-pulseaudio
 	proot --link2symlink --kill-on-exit \
 	-0 -r $ROOTFS -p \
 	-b /dev \
@@ -151,7 +152,9 @@ launch() {
 	PATH="$PATHBASE" \
 	TMPDIR=/tmp \
 	LANG=C.UTF-8 \
-	/bin/su -l $(cat $ROOTFS/etc/userinfo.rc)
+	/bin/su -l $(cat $ROOTFS/etc/userinfo.rc) || true
+	:
+	exec stop-pulseaudio || true
 }
 
 launch-su() {
@@ -159,9 +162,10 @@ launch-su() {
     		echo ""
 	else
     		echo "Cannot start Debian Container. Please install it using debdroid --install"
-		exit 2
+			exit 2
 	fi
 	unset LD_PRELOAD
+	start-pulseaudio
 	proot --link2symlink --kill-on-exit \
 	-0 -r $ROOTFS -p \
 	-b /dev \
@@ -187,7 +191,9 @@ launch-su() {
 	PATH="$PATHBASE" \
 	TMPDIR=/tmp \
 	LANG=C.UTF-8 \
-	/bin/su -l
+	/bin/su -l || true
+	:
+	exec stop-pulseaudio || true
 }
 
 launch-isol() {
@@ -195,9 +201,10 @@ launch-isol() {
     		echo ""
 	else
     		echo "Cannot start Debian Container. Please install it using debdroid --install"
-		exit 2
+			exit 2
 	fi
 	unset LD_PRELOAD
+	start-pulseaudio
 	proot --link2symlink --kill-on-exit \
 	-0 -r $ROOTFS -p \
 	-b /dev \
@@ -219,7 +226,9 @@ launch-isol() {
 	PATH="$PATHBASE" \
 	TMPDIR=/tmp \
 	LANG=C.UTF-8 \
-	/bin/su -l $(cat $ROOTFS/etc/userinfo.rc)
+	/bin/su -l $(cat $ROOTFS/etc/userinfo.rc) || true
+	:
+	exec stop-pulseaudio || true
 }
 
 parse-cmd() {
@@ -227,7 +236,7 @@ parse-cmd() {
     		echo ""
 	else
     		echo "Cannot start Debian Container. Please install it using debdroid --install"
-		exit 2
+			exit 2
 	fi
 	unset LD_PRELOAD
 	proot --link2symlink --kill-on-exit \
@@ -263,7 +272,7 @@ parse-cmd-isol() {
     		echo ""
 	else
     		echo "Cannot start Debian Container. Please install it using debdroid --install"
-		exit 2
+			exit 2
 	fi
 	unset LD_PRELOAD
 	proot --link2symlink --kill-on-exit \
@@ -308,7 +317,7 @@ case "$CMD" in
 	--launch-su)
 		launch-su
 		;;
-	--no-shared)
+	--isolated)
 		launch-isol
 		;;
 	--export)
