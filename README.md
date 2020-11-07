@@ -18,7 +18,6 @@ well-integrated as possible
 * No Rooting Required
 * Supports Desktop Environment (LXDE, LXQT, Mate, XFCE)
 * Test Harmful packages sandboxed without interfering of your Phone
-* Portability with Snapshots and Exports for your Development
 * Sounds is Supported
 
 # Installation
