@@ -9,7 +9,7 @@ Learn more about DebDroid with this [wiki](https://github.com/WMCB-Tech/DebDroid
 # What is DebDroid?
 Well it's a little brush off to other proot methods out there like andronix which it's good but poorly aware of the fact of Android Restrictions.
 DebDroid makes Linux Software integration to Android possible we made linux software work pre-fixed without patches and makes the containerization secure and
-well-integrated as possible
+well-integrated as possible. although this might be a messy technique but it makes the work done easily
 
 # Features
 * Support for Root and Non-root User Accounts
