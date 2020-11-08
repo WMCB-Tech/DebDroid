@@ -1,5 +1,5 @@
 #!/data/data/com.termux/files/usr/bin/bash
-### DEBDROID v2.18.
+### DEBDROID v2.18-R2.
 ### Made By WMCB Tech @wmcbtech30
 ### This script should not be modified at some cases
 ### Dependencies Required
@@ -51,6 +51,7 @@ show_help(){
 	echo ""
 	echo " --install	Installs an Debian Distribution"
 	echo " --uninstall	Uninstalls a Debian Distribution"
+	echo " --reinstall	Reinstalls a Debian Distribution"
 	echo " --launch	Launches Debian Distribution as Regular User"
 	echo " --launch-su	Launches Debian Distribution as Root"
 	echo " --isolated	Launches Debian Distribution without host storage access"
@@ -111,11 +112,10 @@ uninstall() {
 	echo "to stop hit Ctrl-C before Uninstallation"
 	sleep 10 &&
 	echo "Uninstalling an Linux Distro... "
-	chmod 777 -R $ROOTFS > /dev/null 2>&1
+	chmod 777 -R $ROOTFS > /dev/null 2>&1 || true
 	rm -rf $STATEFUL/rootfs > /dev/null 2>&1 &&
 	mkdir $STATEFUL/rootfs > /dev/null 2>&1 &&
 	echo "Debian Container Successfully Uninstalled"
-	exit 1
 }
 
 launch() {
@@ -128,7 +128,7 @@ launch() {
 	unset LD_PRELOAD
 	start-pulseaudio
 	proot --link2symlink --kill-on-exit \
-	-0 -r $ROOTFS -p \
+	-0 -r $ROOTFS -p --sysvipc \
 	-b /dev \
 	-b /proc \
 	-b /sys \
@@ -167,7 +167,7 @@ launch-su() {
 	unset LD_PRELOAD
 	start-pulseaudio
 	proot --link2symlink --kill-on-exit \
-	-0 -r $ROOTFS -p \
+	-0 -r $ROOTFS -p --sysvipc \
 	-b /dev \
 	-b /proc \
 	-b /sys \
@@ -206,7 +206,7 @@ launch-isol() {
 	unset LD_PRELOAD
 	start-pulseaudio
 	proot --link2symlink --kill-on-exit \
-	-0 -r $ROOTFS -p \
+	-0 -r $ROOTFS -p --sysvipc \
 	-b /dev \
 	-b /proc \
 	-b /sys \
@@ -240,7 +240,7 @@ parse-cmd() {
 	fi
 	unset LD_PRELOAD
 	proot --link2symlink --kill-on-exit \
-	-0 -r $ROOTFS -p \
+	-0 -r $ROOTFS -p --sysvipc \
 	-b /dev \
 	-b /proc \
 	-b /sys \
@@ -276,7 +276,7 @@ parse-cmd-isol() {
 	fi
 	unset LD_PRELOAD
 	proot --link2symlink --kill-on-exit \
-	-0 -r $ROOTFS -p \
+	-0 -r $ROOTFS -p --sysvipc \
 	-b /dev \
 	-b /proc \
 	-b /sys \
@@ -299,6 +299,17 @@ parse-cmd-isol() {
 	sudo -u $(cat $ROOTFS/etc/userinfo.rc) "$@"
 }
 
+reinstall() {
+	if [ -e $STATUS ]; then
+    	echo ""
+	else
+    	echo "Cannot Reinstall Debian Container. Debian isn't installed"
+		exit 2
+	fi
+	uninstall || true
+	install-debian
+}
+
 if [ $# = 0 ]; then
 	show_help
 fi
@@ -310,6 +321,9 @@ case "$CMD" in
 	--install) install-debian;;
 	--uninstall)
 		uninstall
+		;;
+	--reinstall)
+		reinstall
 		;;
 	--launch)
 		launch
@@ -326,7 +340,7 @@ case "$CMD" in
 	--import)
 		exec $STATEFUL/lib/librestore-rootfs.so
 		;;
-	-h|--show-help)
+	-h|--help|--show-help)
 		show_help
 		;;
 	--)
