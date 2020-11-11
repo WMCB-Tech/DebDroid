@@ -1,5 +1,5 @@
 #!/data/data/com.termux/files/usr/bin/bash
-### DEBDROID v2.18-R2.
+### DEBDROID v2.19.
 ### Made By WMCB Tech @wmcbtech30
 ### This script should not be modified at some cases
 ### Dependencies Required
@@ -63,13 +63,28 @@ show_help(){
 	echo "	debdroid -- sudo apt update"
 	echo "	debdroid -- nano"
 	echo "	debdroid --- sudo apt upgrade"
+	echo ""
+	echo "File Sharing Options:"
+	echo " --send		Sends file/folder to user's home directory"
+	echo " --share	Shares Directory through /mnt/shared directory"
+	echo " --unshare	Unshares the Shared Directory"
+	echo ""
 	exit 2
 }
 
+exitcode(){
+		echo ""
+		echo "Exiting as Requested... Probably Installation Interruption"
+        echo "To fix this. reinstall it by typing 'debdroid --reinstall'"
+        echo ""
+        exit 2
+}
+
 install-debian() {
+	trap 'exitcode' HUP INT QUIT TERM KILL
 	if [ -e $STATUS ]; then
     		echo "An Existing Installation Found. Please Uninstall a Distro First"
-		exit 2
+			exit 2
 	else
     		echo "Preparing to Install a Debian Container."
 	fi
@@ -94,6 +109,7 @@ install-debian() {
 	esac
 	check-dlcache
 	echo "Configuring the Base System.. This may take Several Minutes"
+	echo ""
 	install $CONFIG/stat $ROOTFS/proc/stat &&
 	install $CONFIG/version $ROOTFS/proc/version &&
 	install $CONFIG/resolv.conf $ROOTFS/etc/resolv.conf &&
@@ -104,6 +120,7 @@ install-debian() {
 	echo ""
 	rm -rf $ROOTFS/opt/distro-config.sh &&
 	echo "Debian Container Successfully Installed. To Start type: debdroid --launch"
+	echo ""
 	exit 1
 }
 
@@ -118,17 +135,88 @@ uninstall() {
 	echo "Debian Container Successfully Uninstalled"
 }
 
-launch() {
+send() {
+	SEND_ARGS="$@"
 	if [ -e $STATUS ]; then
-    		echo ""
+    		:
+	else
+    		echo "Cannot stat Debian Container. Please install it using debdroid '--install'"
+			exit 2
+	fi
+	### Check for an Argument
+	if [ ! -z "$SEND_ARGS" ]; then
+		:
+	else
+		echo "Please Specify a File/Folder to Send"
+		exit 2
+	fi
+	### Check for a file to Send
+	if [ ! -e $SEND_ARGS ]; then
+		echo "Cannot Send file to the Container: No Such file or Directory"
+		exit 2
+	fi
+	### Send files
+	echo ""
+	echo "Sending File: $SEND_ARGS"
+	cp -r $SEND_ARGS $ROOTFS/home/$(cat $ROOTFS/etc/userinfo.rc)/ >/dev/null 2>&1 || true
+	echo "The File $SEND_ARGS successfully sent at your Home Directory"
+}
+
+share() {
+	SHARE_ARGS="$@"
+	if [ -e $STATUS ]; then
+    		:
+	else
+    		echo "Cannot stat Debian Container. Please install it using debdroid '--install'"
+			exit 2
+	fi
+	### Ask for Directory
+	if [ ! -z "$SHARE_ARGS" ]; then
+		:
+	else
+		echo "Please Specify a Directory to Share"
+		exit 2
+	fi
+	### Check if a directory is specified else abort
+	if [ ! -d $SHARE_ARGS ]; then
+		echo "Cannot Apply Share Properties. either you're trying to share a non-directory or directory isn't exists"
+		exit 2
+	fi
+	### Share Directory
+	echo "Applying Share Properties"
+	echo "-b $(realpath $SHARE_ARGS):/mnt/shared" > $ROOTFS/.proot.shareinfo
+	echo "The Directory $SHARE_ARGS is now shared and located at /mnt/shared. you can unshare it by typing:"
+	echo "debdroid --unshare"
+}
+
+unshare(){
+	if [ -e $STATUS ]; then
+		:
+	else
+		echo "Cannot Perform Unshare. Container isn't installed"
+		exit 2
+	fi
+	### Simply delete the metadata
+	rm -rf $ROOTFS/.proot.shareinfo >/dev/null 2>&1 || true
+}
+
+launch() {
+	local SHARE_PROPERTIES=""
+	if [ -e $STATUS ]; then
+    		:
 	else
     		echo "Cannot start Debian Container. Please install it using debdroid --install"
 			exit 2
 	fi
+	### Check for Extra Shares
+	if [ -e $ROOTFS/.proot.shareinfo ]; then
+		export SHARE_PROPERTIES="$(cat $ROOTFS/.proot.shareinfo)"
+	fi
 	unset LD_PRELOAD
 	start-pulseaudio
 	proot --link2symlink --kill-on-exit \
-	-0 -r $ROOTFS -p --sysvipc \
+	-0 -r $ROOTFS -p --sysvipc -H \
+	$SHARE_PROPERTIES \
 	-b /dev \
 	-b /proc \
 	-b /sys \
@@ -142,9 +230,8 @@ launch() {
 	-b $ROOTFS/proc/stat:/proc/stat \
 	-b $ROOTFS/proc/version:/proc/version \
 	-b /storage/emulated/0:/sdcard \
-	-b /data \
-	-b /system \
 	-b /:/host-rootfs \
+	-w /root \
 	/usr/bin/env -i \
 	TERM=xterm-256color \
 	HOME=/root \
@@ -158,16 +245,22 @@ launch() {
 }
 
 launch-su() {
+	local SHARE_PROPERTIES=""
 	if [ -e $STATUS ]; then
-    		echo ""
+    		:
 	else
     		echo "Cannot start Debian Container. Please install it using debdroid --install"
 			exit 2
 	fi
+	### Check for Extra Shares
+	if [ -e $ROOTFS/.proot.shareinfo ]; then
+		export SHARE_PROPERTIES="$(cat $ROOTFS/.proot.shareinfo)"
+	fi
 	unset LD_PRELOAD
 	start-pulseaudio
 	proot --link2symlink --kill-on-exit \
-	-0 -r $ROOTFS -p --sysvipc \
+	-0 -r $ROOTFS -p --sysvipc -H \
+	$SHARE_PROPERTIES \
 	-b /dev \
 	-b /proc \
 	-b /sys \
@@ -181,9 +274,8 @@ launch-su() {
 	-b $ROOTFS/proc/stat:/proc/stat \
 	-b $ROOTFS/proc/version:/proc/version \
 	-b /storage/emulated/0:/sdcard \
-	-b /data \
-	-b /system \
 	-b /:/host-rootfs \
+	-w /root \
 	/usr/bin/env -i \
 	TERM=xterm-256color \
 	HOME=/root \
@@ -198,7 +290,7 @@ launch-su() {
 
 launch-isol() {
 	if [ -e $STATUS ]; then
-    		echo ""
+    		:
 	else
     		echo "Cannot start Debian Container. Please install it using debdroid --install"
 			exit 2
@@ -206,7 +298,7 @@ launch-isol() {
 	unset LD_PRELOAD
 	start-pulseaudio
 	proot --link2symlink --kill-on-exit \
-	-0 -r $ROOTFS -p --sysvipc \
+	-0 -r $ROOTFS -p --sysvipc -H \
 	-b /dev \
 	-b /proc \
 	-b /sys \
@@ -232,15 +324,21 @@ launch-isol() {
 }
 
 parse-cmd() {
+	local SHARE_PROPERTIES=""
 	if [ -e $STATUS ]; then
-    		echo ""
+    		:
 	else
     		echo "Cannot start Debian Container. Please install it using debdroid --install"
 			exit 2
 	fi
+	### Check for Extra Shares
+	if [ -e $ROOTFS/.proot.shareinfo ]; then
+		export SHARE_PROPERTIES="$(cat $ROOTFS/.proot.shareinfo)"
+	fi
 	unset LD_PRELOAD
 	proot --link2symlink --kill-on-exit \
-	-0 -r $ROOTFS -p --sysvipc \
+	-0 -r $ROOTFS -p --sysvipc -H \
+	$SHARE_PROPERTIES \
 	-b /dev \
 	-b /proc \
 	-b /sys \
@@ -254,9 +352,8 @@ parse-cmd() {
 	-b $ROOTFS/proc/stat:/proc/stat \
 	-b $ROOTFS/proc/version:/proc/version \
 	-b /storage/emulated/0:/sdcard \
-	-b /data \
-	-b /system \
 	-b /:/host-rootfs \
+	-w /home/$(cat $ROOTFS/etc/userinfo.rc) \
 	/usr/bin/env -i \
 	TERM=xterm-256color \
 	HOME=/root \
@@ -269,14 +366,14 @@ parse-cmd() {
 
 parse-cmd-isol() {
 	if [ -e $STATUS ]; then
-    		echo ""
+    		:
 	else
     		echo "Cannot start Debian Container. Please install it using debdroid --install"
 			exit 2
 	fi
 	unset LD_PRELOAD
 	proot --link2symlink --kill-on-exit \
-	-0 -r $ROOTFS -p --sysvipc \
+	-0 -r $ROOTFS -p --sysvipc -H \
 	-b /dev \
 	-b /proc \
 	-b /sys \
@@ -288,7 +385,7 @@ parse-cmd-isol() {
 	-b $PREFIX/tmp:/tmp \
 	-b $ROOTFS/proc/stat:/proc/stat \
 	-b $ROOTFS/proc/version:/proc/version \
-	-w /root \
+	-w /home/$(cat $ROOTFS/etc/userinfo.rc) \
 	/usr/bin/env -i \
 	TERM=xterm-256color \
 	HOME=/root \
@@ -301,7 +398,7 @@ parse-cmd-isol() {
 
 reinstall() {
 	if [ -e $STATUS ]; then
-    	echo ""
+    	:
 	else
     	echo "Cannot Reinstall Debian Container. Debian isn't installed"
 		exit 2
@@ -342,6 +439,15 @@ case "$CMD" in
 		;;
 	-h|--help|--show-help)
 		show_help
+		;;
+	--send)
+		send "$@"
+		;;
+	--share)
+		share "$@"
+		;;
+	--unshare)
+		unshare
 		;;
 	--)
 		parse-cmd "$@"
