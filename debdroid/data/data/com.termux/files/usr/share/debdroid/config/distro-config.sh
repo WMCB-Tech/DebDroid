@@ -8,11 +8,12 @@
 ### 5. Clean up.
 set -e -u
 
-## Install Packages
+## Install Packages and Fix segfaults as well
 apt update
-apt upgrade -y
-apt install nano sudo busybox udisks2 dbus-x11 locales pulseaudio -y
-apt autoremove -y
+apt upgrade -y || true
+apt install nano sudo busybox udisks2 dbus-x11 locales pulseaudio -y || true
+apt install -f || true
+apt autoremove -y || true
 apt clean
 
 ## Fix Problems
