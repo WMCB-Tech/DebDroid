@@ -95,6 +95,12 @@ Password: password
 If you're running Android 5-6. you may encounter problems \
 For more information click [here](https://github.com/WMCB-Tech/DebDroid/wiki/Using-%22.export%22-files)
 
+# Development
+On the Releases page. you will see some tarballs can be packaged with `dpkg-deb` which it designed to make your own DebDroid-Based projects \
+**NOTE: Do not git clone to use this for creating your own since it's only useful for inspection and commit checks only**
+
+When Unpacking DebDroid tarball. you will see the Debian Package Control Directory and a Directory structure needed to place files.
+You can easily package it instantly from tarball to debian package.
 # Credits
 [PRoot](https://proot-me.github.io/) \
 [Termux](https://termux.com/)
