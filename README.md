@@ -66,7 +66,7 @@ to gain access via sudo.
  Uninstalling is simple. simply type: \
  `debdroid --uninstall`
  
- Note that instead of asking you to delete it. you have 15 seconds before the removal so better to hit Ctrl-C before it's too late
+ Note that instead of asking you to delete it. you have 10 seconds before the removal so better to hit Ctrl-C before it's too late
 
 # Alternate OS Images
 Since DebDroid can run other distributions. i have provided a 3 images. for now we are using a Free of Service so google drive has limits and soon i may setup GIT LFS and we only rely on ARM64 Architectures
@@ -94,19 +94,23 @@ Password: password
 
 If you're running Android 5-6. you may encounter problems \
 For more information click [here](https://github.com/WMCB-Tech/DebDroid/wiki/Using-%22.export%22-files)
-
+***NOTE: This may not be updated yet based on DebDroid Releases***
 # Development
-On the Releases page. you will see some tarballs can be packaged with `dpkg-deb` which it designed to make your own DebDroid-Based projects \
-**NOTE: Do not git clone to use this for creating your own since it's only useful for inspection and commit checks only**
+On the Releases page. you will see some tarballs can be packaged with `dpkg-deb` which it designed to make your own DebDroid-Based projects
 
-When Unpacking DebDroid tarball. you will see the Debian Package Control Directory and a Directory structure needed to place files.
-You can easily package it instantly from tarball to debian package.
+**Can i use git clone?** \
+Yes. it would be useful for pull-requests, submitting bug reports, opening new branches \
+You can use this for using Git version of DebDroid but the dependencies would not be managed so it's recommended to use the source package tarball useful for creating your own DebDroid-based Projects 
+
+**Packaging**
+To package your own debdroid. simply package the directory with `dpkg-deb`
+
 # Credits
 [PRoot](https://proot-me.github.io/) \
 [Termux](https://termux.com/)
 
 
-# Stay In Touched?
+# Stay In Touched.
 [Discord](http://bit.ly/WMCBDiscord) \
 [Twitter](http://twitter.com/wmcbtech30)\
 [YouTube](https://www.youtube.com/wmcbtech) 
