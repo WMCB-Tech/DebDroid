@@ -11,8 +11,9 @@ set -e -u
 ## Install Packages and Fix segfaults as well
 apt update
 apt upgrade -y || true
+apt install -f -y || true
 apt install nano sudo busybox udisks2 dbus-x11 locales pulseaudio -y || true
-apt install -f || true
+apt install -f -y || true
 apt autoremove -y || true
 apt clean
 
