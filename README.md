@@ -93,7 +93,8 @@ Username: wmcbtech \
 Password: password
 
 If you're running Android 5-6. you may encounter problems \
-For more information click [here](https://github.com/WMCB-Tech/DebDroid/wiki/Using-%22.export%22-files)
+For more information click [here](https://github.com/WMCB-Tech/DebDroid/wiki/Using-%22.export%22-files) 
+
 ***NOTE: This may not be updated yet based on DebDroid Releases***
 # Development
 On the Releases page. you will see some tarballs can be packaged with `dpkg-deb` which it designed to make your own DebDroid-Based projects
@@ -102,7 +103,7 @@ On the Releases page. you will see some tarballs can be packaged with `dpkg-deb`
 Yes. it would be useful for pull-requests, submitting bug reports, opening new branches \
 You can use this for using Git version of DebDroid but the dependencies would not be managed so it's recommended to use the source package tarball useful for creating your own DebDroid-based Projects 
 
-**Packaging**
+**Packaging** \
 To package your own debdroid. simply package the directory with `dpkg-deb`
 
 # Credits
