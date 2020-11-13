@@ -32,7 +32,7 @@ Installation is quite easy. follow the steps shown below:
 1.) On termux, Type the following: \
 `pkg update -y`
 
-2.) Download the [DebDroid Debian Package file](https://github.com/WMCB-Tech/DebDroid/releases/tag/v2.19)
+2.) Download the [DebDroid Debian Package file](https://github.com/WMCB-Tech/DebDroid/releases/tag/v2.19-R2)
 
 3.) Install the package by typing: \
 `apt install ./path/to/debdroid.deb` \
