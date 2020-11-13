@@ -13,12 +13,12 @@ well-integrated as possible. although this might be a messy technique but it mak
 
 # Features
 * Support for Root and Non-root User Accounts
-* Run your Favorite Linux IDE's, Apps, Utilities
-* Full Debian Environment in your Pocket
-* No Rooting Required
-* Supports Desktop Environment (LXDE, LXQT, Mate, XFCE)
-* Test Harmful packages sandboxed without interfering of your Phone
-* Sounds Support (Beta)
+* Run your Favorite Linux IDE's, Apps, Utilities Easily
+* Run your Local Servers easily using SSH, Node, FTP, and more
+* Backup and Restore Feature
+* Supports Desktop Environments (LXDE, LXQT, Mate, XFCE)
+* Supports Device Architectures (ARM, i386, AMD64, ARM64)
+* Sounds Support with PulseAudio
 
 # Installation
 Installation is quite easy. follow the steps shown below:
