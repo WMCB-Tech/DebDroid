@@ -1,0 +1,3 @@
+[submodule "debdroid-de-installer"]
+	path = debdroid-de-installer
+	url = https://github.com/WMCB-Tech/debdroid-de-installer
