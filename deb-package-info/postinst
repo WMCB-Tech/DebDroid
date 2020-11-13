@@ -1,0 +1,10 @@
+#!/data/data/com.termux/files/usr/bin/bash
+
+## Make a simple dialog to greet the users
+dialog --title "Information" \
+ --msgbox \
+ "Welcome to DebDroid. an easy debian installer. if you have problems. join my discord server. or make an issue in github\
+  Learn more about debian in https://wiki.debian.org/ and tldp.org. \
+  To Uninstall Debian. type 'debdroid --uninstall'" \
+ 13 40
+
