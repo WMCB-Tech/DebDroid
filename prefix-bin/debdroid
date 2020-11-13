@@ -1,5 +1,5 @@
 #!/data/data/com.termux/files/usr/bin/bash
-### DEBDROID v2.19.
+### DEBDROID v2.19-R2.
 ### Made By WMCB Tech @wmcbtech30
 ### This script should not be modified at some cases
 ### Dependencies Required
@@ -31,16 +31,16 @@ check-network-connectivity(){
 }
 
 check-dlcache() {
-	if [ -e $HOME/.cache/dlcache.tar.xz ]; then
+	if [ -e $HOME/.cache/dlcache.tar.*z ]; then
 		echo "Existing Image File Found. Skipping Download and Extracting the rootfs"
 		echo "Unpacking The Base System.... This may take a few minutes"
-		proot --link2symlink -0 tar -xf $HOME/.cache/dlcache.tar.xz --exclude dev -C $ROOTFS > /dev/null 2>&1
+		proot --link2symlink -0 tar -xf $HOME/.cache/dlcache.tar.*z --exclude dev -C $ROOTFS > /dev/null 2>&1
 	else
 		echo "Downloading the Debian Image file....."
 		mkdir -p $HOME/.cache >/dev/null 2>&1 &&
 		wget "https://github.com/WMCB-Tech/AndronixOrigin/raw/master/Rootfs/Debian/${archurl}/debian-rootfs-${archurl}.tar.xz?raw=true" -O $HOME/.cache/dlcache.tar.xz &&
 		echo "Unpacking The Base System.... This may take a few minutes"
-		proot --link2symlink -0 tar -xf $HOME/.cache/dlcache.tar.xz --exclude dev -C $ROOTFS > /dev/null 2>&1
+		proot --link2symlink -0 tar -xf $HOME/.cache/dlcache.tar.*z --exclude dev -C $ROOTFS > /dev/null 2>&1
 	fi
 }
 
@@ -69,15 +69,19 @@ show_help(){
 	echo " --share	Shares Directory through /mnt/shared directory"
 	echo " --unshare	Unshares the Shared Directory"
 	echo ""
+	echo "Sharing Examples: "
+	echo "	debdroid --send /sdcard/code.py"
+	echo "	debdroid --share ~/directory"
+	echo ""
 	exit 2
 }
 
 exitcode(){
-		echo ""
-		echo "Exiting as Requested... Probably Installation Interruption"
-        echo "To fix this. reinstall it by typing 'debdroid --reinstall'"
-        echo ""
-        exit 2
+	echo ""
+	echo "Exiting as Requested... Probably Installation Interruption"
+	echo "To fix this. reinstall it by typing 'debdroid --reinstall'"
+	echo ""
+	exit 2
 }
 
 install-debian() {
@@ -110,6 +114,7 @@ install-debian() {
 	check-dlcache
 	echo "Configuring the Base System.. This may take Several Minutes"
 	echo ""
+	set-android-groups || true
 	install $CONFIG/stat $ROOTFS/proc/stat &&
 	install $CONFIG/version $ROOTFS/proc/version &&
 	install $CONFIG/resolv.conf $ROOTFS/etc/resolv.conf &&
@@ -135,13 +140,26 @@ uninstall() {
 	echo "Debian Container Successfully Uninstalled"
 }
 
+set-android-groups(){
+	### This should atleast fix group errors for Ubuntu Guests
+	echo "aid_$(id -un):x:$(id -u):$(id -g):Android Groups:/:/usr/sbin/nologin" >> "$ROOTFS/etc/passwd"
+	echo "aid_$(id -un):*:18446:0:99999:7:::" >> "$ROOTFS/etc/shadow"
+	local g
+		for g in $(id -G); do
+			echo "aid_$(id -gn "$g"):x:${g}:root,aid_$(id -un)" >> "$ROOTFS/etc/group"
+			if [ -f "$ROOTFS/etc/gshadow" ]; then
+				echo "aid_$(id -gn "$g"):*::root,aid_$(id -un)" >> "$ROOTFS/etc/gshadow"
+			fi
+		done
+}
+
 send() {
 	SEND_ARGS="$@"
 	if [ -e $STATUS ]; then
-    		:
+    	:
 	else
-    		echo "Cannot stat Debian Container. Please install it using debdroid '--install'"
-			exit 2
+		echo "Cannot stat Debian Container. Please install it using debdroid '--install'"
+		exit 2
 	fi
 	### Check for an Argument
 	if [ ! -z "$SEND_ARGS" ]; then
@@ -165,10 +183,10 @@ send() {
 share() {
 	SHARE_ARGS="$@"
 	if [ -e $STATUS ]; then
-    		:
+    	:
 	else
-    		echo "Cannot stat Debian Container. Please install it using debdroid '--install'"
-			exit 2
+		echo "Cannot stat Debian Container. Please install it using debdroid '--install'"
+		exit 2
 	fi
 	### Ask for Directory
 	if [ ! -z "$SHARE_ARGS" ]; then
@@ -203,10 +221,10 @@ unshare(){
 launch() {
 	local SHARE_PROPERTIES=""
 	if [ -e $STATUS ]; then
-    		:
+    	:
 	else
-    		echo "Cannot start Debian Container. Please install it using debdroid --install"
-			exit 2
+		echo "Cannot start Debian Container. Please install it using debdroid --install"
+		exit 2
 	fi
 	### Check for Extra Shares
 	if [ -e $ROOTFS/.proot.shareinfo ]; then
@@ -247,10 +265,10 @@ launch() {
 launch-su() {
 	local SHARE_PROPERTIES=""
 	if [ -e $STATUS ]; then
-    		:
+    	:
 	else
-    		echo "Cannot start Debian Container. Please install it using debdroid --install"
-			exit 2
+		echo "Cannot start Debian Container. Please install it using debdroid --install"
+		exit 2
 	fi
 	### Check for Extra Shares
 	if [ -e $ROOTFS/.proot.shareinfo ]; then
@@ -290,10 +308,10 @@ launch-su() {
 
 launch-isol() {
 	if [ -e $STATUS ]; then
-    		:
+    	:
 	else
-    		echo "Cannot start Debian Container. Please install it using debdroid --install"
-			exit 2
+		echo "Cannot start Debian Container. Please install it using debdroid --install"
+		exit 2
 	fi
 	unset LD_PRELOAD
 	start-pulseaudio
@@ -326,10 +344,10 @@ launch-isol() {
 parse-cmd() {
 	local SHARE_PROPERTIES=""
 	if [ -e $STATUS ]; then
-    		:
+    	:
 	else
-    		echo "Cannot start Debian Container. Please install it using debdroid --install"
-			exit 2
+		echo "Cannot start Debian Container. Please install it using debdroid --install"
+		exit 2
 	fi
 	### Check for Extra Shares
 	if [ -e $ROOTFS/.proot.shareinfo ]; then
@@ -366,10 +384,10 @@ parse-cmd() {
 
 parse-cmd-isol() {
 	if [ -e $STATUS ]; then
-    		:
+    	:
 	else
-    		echo "Cannot start Debian Container. Please install it using debdroid --install"
-			exit 2
+		echo "Cannot start Debian Container. Please install it using debdroid --install"
+		exit 2
 	fi
 	unset LD_PRELOAD
 	proot --link2symlink --kill-on-exit \
@@ -400,7 +418,7 @@ reinstall() {
 	if [ -e $STATUS ]; then
     	:
 	else
-    	echo "Cannot Reinstall Debian Container. Debian isn't installed"
+		echo "Cannot Reinstall Debian Container. Debian isn't installed"
 		exit 2
 	fi
 	uninstall || true
