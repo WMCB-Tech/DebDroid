@@ -1,0 +1,8 @@
+Package: debdroid
+Version: 2.19-R2
+Section: Virtualization
+Priority: optional 
+Architecture: all 
+Depends: wget, dialog, proot, tar, pulseaudio
+Maintainer: @wmcbtech30
+Description: Run Debian Without Root on your Android Device
