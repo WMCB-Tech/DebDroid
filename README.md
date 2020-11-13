@@ -106,6 +106,8 @@ You can use this for using Git version of DebDroid but the dependencies would no
 **Packaging** \
 To package your own debdroid. simply package the directory with `dpkg-deb`
 
+P.S. Used VS Code for development
+
 # Credits
 [PRoot](https://proot-me.github.io/) \
 [Termux](https://termux.com/)
