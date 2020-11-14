@@ -1,5 +1,5 @@
 #!/data/data/com.termux/files/usr/bin/bash
-### DEBDROID v2.19-R2.
+### DEBDROID v2.19-R3.
 ### Made By WMCB Tech @wmcbtech30
 ### This script should not be modified at some cases
 ### Dependencies Required
@@ -65,13 +65,15 @@ show_help(){
 	echo "	debdroid --- sudo apt upgrade"
 	echo ""
 	echo "File Sharing Options:"
-	echo " --send		Sends file/folder to user's home directory"
+	echo " --send		Sends file/folder to user's home directory 'alias to --push'"
+	echo " --recieve	Gets file/folder from the container 'alias to --pull'"
 	echo " --share	Shares Directory through /mnt/shared directory"
 	echo " --unshare	Unshares the Shared Directory"
 	echo ""
 	echo "Sharing Examples: "
 	echo "	debdroid --send /sdcard/code.py"
 	echo "	debdroid --share ~/directory"
+	echo "	debdroid --recieve /opt/code.py"
 	echo ""
 	exit 2
 }
@@ -117,7 +119,11 @@ install-debian() {
 	set-android-groups || true
 	install $CONFIG/stat $ROOTFS/proc/stat &&
 	install $CONFIG/version $ROOTFS/proc/version &&
+	install $CONFIG/vmstat $ROOTFS/proc/vmstat &&
+	install $CONFIG/uptime $ROOTFS/proc/uptime &&
+	install $CONFIG/loadavg $ROOTFS/proc/loadavg &&
 	install $CONFIG/resolv.conf $ROOTFS/etc/resolv.conf &&
+	install $CONFIG/hosts $ROOTFS/etc/hosts &&
 	install $CONFIG/libdone.so.9 $ROOTFS/usr/lib/.libdone.so.9 &&
 	install -m 755 $CONFIG/distro-config.sh $ROOTFS/opt/distro-config.sh &&
 	bash $CONFIG/configure.sh &&
@@ -207,11 +213,37 @@ share() {
 	echo "debdroid --unshare"
 }
 
+recieve(){
+	RECIEVE_ARGS="$@"
+	local PWD="$(pwd)"
+	if [ -e $STATUS ]; then
+		:
+	else
+		echo "Cannot stat Debian Container. Please install it using debdroid '--install'"
+		exit 2
+	fi
+	### Check for an Argument
+	if [ ! -z "$RECIEVE_ARGS" ]; then
+		:
+	else
+		echo "Please Specify an File/Folder to pull"
+		exit 2
+	fi
+	### Check for an File to pull
+	if [ ! -e ${ROOTFS}${RECIEVE_ARGS} ]; then
+		echo "Cannot Pull a file from the container: no such file or directory"
+		exit 2
+	fi
+	### Pull Files
+	echo "Pulling $RECIEVE_ARGS..." 
+	cp -rf ${ROOTFS}${RECIEVE_ARGS} $PWD >/dev/null 2>&1 || true
+}
+
 unshare(){
 	if [ -e $STATUS ]; then
 		:
 	else
-		echo "Cannot Perform Unshare. Container isn't installed"
+		echo "Cannot stat Debian Container. Please install it using debdroid '--install'"
 		exit 2
 	fi
 	### Simply delete the metadata
@@ -247,6 +279,9 @@ launch() {
 	-b $PREFIX/tmp:/tmp \
 	-b $ROOTFS/proc/stat:/proc/stat \
 	-b $ROOTFS/proc/version:/proc/version \
+	-b $ROOTFS/proc/uptime:/proc/uptime \
+	-b $ROOTFS/proc/vmstat:/proc/vmstat \
+	-b $ROOTFS/proc/loadavg:/proc/loadavg \
 	-b /storage/emulated/0:/sdcard \
 	-b /:/host-rootfs \
 	-w /root \
@@ -291,6 +326,9 @@ launch-su() {
 	-b $PREFIX/tmp:/tmp \
 	-b $ROOTFS/proc/stat:/proc/stat \
 	-b $ROOTFS/proc/version:/proc/version \
+	-b $ROOTFS/proc/uptime:/proc/uptime \
+	-b $ROOTFS/proc/vmstat:/proc/vmstat \
+	-b $ROOTFS/proc/loadavg:/proc/loadavg \
 	-b /storage/emulated/0:/sdcard \
 	-b /:/host-rootfs \
 	-w /root \
@@ -328,6 +366,9 @@ launch-isol() {
 	-b $PREFIX/tmp:/tmp \
 	-b $ROOTFS/proc/stat:/proc/stat \
 	-b $ROOTFS/proc/version:/proc/version \
+	-b $ROOTFS/proc/uptime:/proc/uptime \
+	-b $ROOTFS/proc/vmstat:/proc/vmstat \
+	-b $ROOTFS/proc/loadavg:/proc/loadavg \
 	-w /root \
 	/usr/bin/env -i \
 	TERM=xterm-256color \
@@ -369,6 +410,9 @@ parse-cmd() {
 	-b $PREFIX/tmp:/tmp \
 	-b $ROOTFS/proc/stat:/proc/stat \
 	-b $ROOTFS/proc/version:/proc/version \
+	-b $ROOTFS/proc/uptime:/proc/uptime \
+	-b $ROOTFS/proc/vmstat:/proc/vmstat \
+	-b $ROOTFS/proc/loadavg:/proc/loadavg \
 	-b /storage/emulated/0:/sdcard \
 	-b /:/host-rootfs \
 	-w /home/$(cat $ROOTFS/etc/userinfo.rc) \
@@ -403,6 +447,9 @@ parse-cmd-isol() {
 	-b $PREFIX/tmp:/tmp \
 	-b $ROOTFS/proc/stat:/proc/stat \
 	-b $ROOTFS/proc/version:/proc/version \
+	-b $ROOTFS/proc/uptime:/proc/uptime \
+	-b $ROOTFS/proc/vmstat:/proc/vmstat \
+	-b $ROOTFS/proc/loadavg:/proc/loadavg \
 	-w /home/$(cat $ROOTFS/etc/userinfo.rc) \
 	/usr/bin/env -i \
 	TERM=xterm-256color \
@@ -458,8 +505,11 @@ case "$CMD" in
 	-h|--help|--show-help)
 		show_help
 		;;
-	--send)
+	--send|--push)
 		send "$@"
+		;;
+	--recieve|--pull)
+		recieve "$@"
 		;;
 	--share)
 		share "$@"
