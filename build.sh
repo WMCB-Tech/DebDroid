@@ -2,7 +2,8 @@
 ### DebDroid Git Automatic Build Script
 ### Automatically Builds files from git to deb
 NOIPC_BUILD=""
-PREFIXROOT="${HOME}/debdroid-build/data/data/com.termux/files/usr/{bin,share/debdroid}"
+PREFIXROOT="${HOME}/debdroid-build/data/data/com.termux/files/usr/share/debdroid"
+PREFIXBIN="${HOME}/debdroid-build/data/data/com.termux/files/usr/share/debdroid"
 CONTROL=${HOME}/debdroid-build/DEBIAN
 SPATH="${HOME}/debdroid-build/data/data/com.termux/files/usr/bin"
 UPATH="${HOME}/debdroid-build/data/data/com.termux/files/usr/share/debdroid"
@@ -26,6 +27,7 @@ fi
 
 mkdir -p $CONTROL
 mkdir -p $PREFIXROOT
+mkdir -p $PREFIXBIN
 
 if [ "$NOIPC_BUILD" = "y*" ]; then
     install -m 777 prefix-bin/debdroid-noipc $SPATH/debdroid
