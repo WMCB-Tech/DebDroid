@@ -173,7 +173,7 @@ send() {
 		exit 2
 	fi
 	### Check for a file to Send
-	if [ ! -e $SEND_ARGS ]; then
+	if [ ! -e "$SEND_ARGS" ]; then
 		echo "Cannot Send file to the Container: No Such file or Directory"
 		exit 2
 	fi
@@ -200,7 +200,7 @@ share() {
 		exit 2
 	fi
 	### Check if a directory is specified else abort
-	if [ ! -d $SHARE_ARGS ]; then
+	if [ ! -d "$SHARE_ARGS" ]; then
 		echo "Cannot Apply Share Properties. either you're trying to share a non-directory or directory isn't exists"
 		exit 2
 	fi
@@ -228,7 +228,7 @@ recieve(){
 		exit 2
 	fi
 	### Check for an File to pull
-	if [ ! -e ${ROOTFS}${RECIEVE_ARGS} ]; then
+	if [ ! -e "${ROOTFS}${RECIEVE_ARGS}" ]; then
 		echo "Cannot Pull a file from the container: no such file or directory"
 		exit 2
 	fi
@@ -360,8 +360,7 @@ launch-isol() {
 	-b /proc/self/fd/0:/dev/stdin \
 	-b /proc/self/fd/1:/dev/stdout \
 	-b /proc/self/fd/2:/dev/stderr \
-	-b $PREFIX/tmp:/dev/shm \
-	-b $PREFIX/tmp:/tmp \
+	-b $ROOTFS/tmp:/dev/shm \
 	-b $ROOTFS/proc/stat:/proc/stat \
 	-b $ROOTFS/proc/version:/proc/version \
 	-b $ROOTFS/proc/uptime:/proc/uptime \
@@ -441,8 +440,7 @@ parse-cmd-isol() {
 	-b /proc/self/fd/0:/dev/stdin \
 	-b /proc/self/fd/1:/dev/stdout \
 	-b /proc/self/fd/2:/dev/stderr \
-	-b $PREFIX/tmp:/dev/shm \
-	-b $PREFIX/tmp:/tmp \
+	-b $ROOTFS/tmp:/dev/shm \
 	-b $ROOTFS/proc/stat:/proc/stat \
 	-b $ROOTFS/proc/version:/proc/version \
 	-b $ROOTFS/proc/uptime:/proc/uptime \
