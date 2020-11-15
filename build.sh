@@ -33,7 +33,8 @@ else
     install -m 777 prefix-bin/debdroid $SPATH/debdroid
 fi
 
-cp -rf prefix-conf/{config,lib} $UPATH
+cp -rf prefix-conf/config $UPATH
+cp -rf prefix-conf/lib $UPATH
 chmod 777 $UPATH/configure.sh
 chmod 777 $UPATH/distro-config.sh
 chmod 777 $UPATH/lib/lib*
