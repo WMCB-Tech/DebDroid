@@ -1,11 +1,9 @@
 #!/data/data/com.termux/files/usr/bin/bash
-### DEBDROID v2.19-R3.
+### DEBDROID v2.20.
 ### Made By WMCB Tech @wmcbtech30
 ### This script should not be modified at some cases
 ### Dependencies Required
 ### proot, tar, wget, dialog, pulseaudio
-###
-### This script uses Andronix Resources as if debootstrap may fail the installation
 set -e -u
 ROOTFS="$PREFIX/share/debdroid/rootfs"
 CONFIG="$PREFIX/share/debdroid/config"
@@ -38,7 +36,7 @@ check-dlcache() {
 	else
 		echo "Downloading the Debian Image file....."
 		mkdir -p $HOME/.cache >/dev/null 2>&1 &&
-		wget "https://github.com/WMCB-Tech/AndronixOrigin/raw/master/Rootfs/Debian/${archurl}/debian-rootfs-${archurl}.tar.xz?raw=true" -O $HOME/.cache/dlcache.tar.xz &&
+		wget "https://github.com/WMCB-Tech/debdroid-rootfs-repo/raw/master/rootfs/buster/debian-rootfs-${archurl}.tar.xz" -O $HOME/.cache/dlcache.tar.xz &&
 		echo "Unpacking The Base System.... This may take a few minutes"
 		proot --link2symlink -0 tar -xf $HOME/.cache/dlcache.tar.*z --exclude dev -C $ROOTFS > /dev/null 2>&1
 	fi
