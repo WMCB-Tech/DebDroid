@@ -95,7 +95,7 @@ Password: password
 If you're running Android 5-6. you may encounter problems \
 For more information click [here](https://github.com/WMCB-Tech/DebDroid/wiki/Using-%22.export%22-files) 
 
-***NOTE: This may not be updated yet based on DebDroid Releases***
+***NOTE: This may not be updated yet based on DebDroid Releases. To use Alternate OS. Use the 2.17-R2 version***
 # Development
 On the Releases page. you will see some tarballs can be packaged with `dpkg-deb` which it designed to make your own DebDroid-Based projects
 
