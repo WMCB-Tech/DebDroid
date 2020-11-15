@@ -1,3 +1,6 @@
 [submodule "debdroid-de-installer"]
 	path = debdroid-de-installer
 	url = https://github.com/WMCB-Tech/debdroid-de-installer
+[submodule "debdroid-rootfs-repo"]
+	path = debdroid-rootfs-repo
+	url = https://github.com/WMCB-Tech/debdroid-rootfs-repo/
