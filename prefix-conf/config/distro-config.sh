@@ -8,12 +8,16 @@
 ### 5. Clean up.
 set -e -u
 
+## Add 'contrib non-free' componenets
+sed -i 's/main/main contrib non-free/g' /etc/apt/sources.list >/dev/null 2>&1 || true
+
 ## Install Packages and Fix segfaults as well
 apt update
 apt upgrade -y || true
 apt install -f -y || true
 apt install nano sudo busybox udisks2 dbus-x11 locales pulseaudio -y || true
 apt install -f -y || true
+dpkg --configure -a || true
 apt autoremove -y || true
 apt clean
 
@@ -26,10 +30,15 @@ echo "export PATH=/usr/local/bin:/usr/local/sbin:/usr/local/games:/bin:/sbin:/us
 echo "export LANG=C.UTF-8" > /etc/profile.d/langenv.sh
 echo "export PULSE_SERVER=127.0.0.1" > /etc/profile.d/pulse.sh
 
-## Configure udisks2 as if udisks2 interrupts apt
+## Symlink top and w commands for workarounds and allow execution for them
+ln -rs /bin/busybox /usr/local/bin/top
+ln -rs /bin/busybox /usr/local/bin/w
+
+## Configure udisks2 and dbus as if udisks2 interrupts apt
 echo ""
 echo "Configuring Udisks2.... "
 echo "" > /var/lib/dpkg/info/udisks2.postinst
+echo "" > /var/lib/dpkg/info/dbus.postinst
 dpkg --configure -a
 
 ## Setup User Accounts
