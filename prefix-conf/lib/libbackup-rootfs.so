@@ -1,25 +1,32 @@
 #!/data/data/com.termux/files/usr/bin/bash
 STATEFUL="$PREFIX/share/debdroid"
 STATUS="$PREFIX/share/debdroid/rootfs/usr/lib/.libdone.so.9"
+
+RED="$(tput setaf 1)"
+GREEN="$(tput setaf 2)"
+YELLOW="$(tput setaf 3)"
+BOLD="$(tput bold)"
+NOATTR="$(tput sgr0)"
+
 set -e -u
 
 ## Validate Rootfs
 if [ -e $STATUS ]; then
     exec
 else
-    echo "Debian Container isn't installed. Aborting Exit Code 2"
+    echo "${RED}${BOLD}Debian Container isn't installed. Aborting Exit Code 2${NOATTR}"
     exit 2
 fi
 ### Next Step
-echo "NOTICE: Please close all your sessions before continuing. to prevent permission denials"
+echo "${GREEN}${BOLD}NOTICE: Please close all your sessions before continuing. to prevent permission denials${NOATTR}"
 ### Ask for User Prompt
 read -e -p "Please Enter the name to export your backups: " backup
 
 ### Start Backup
 echo ""
-echo "Backing Up. This may take a few minutes"
+echo "${YELLOW}${BOLD}Backing Up. This may take a few minutes${NOATTR}"
 cd $STATEFUL
 proot --link2symlink -0 tar -zcf $HOME/"$backup".export rootfs >/dev/null 2>&1 || true
-echo "Debian Container exported successfully."
+echo "${GREEN}${BOLD}Debian Container exported successfully.${NOATTR}"
 exit 1
 
