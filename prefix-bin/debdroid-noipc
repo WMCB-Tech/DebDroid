@@ -1,15 +1,23 @@
 #!/data/data/com.termux/files/usr/bin/bash
-### DEBDROID v2.20.
+### DEBDROID v3.00.
 ### Made By WMCB Tech @wmcbtech30
 ### This script should not be modified at some cases
 ### Dependencies Required
 ### proot, tar, wget, dialog, pulseaudio
+###
+### Rootfs Hosting - https://github.com/debuerreotype/docker-debian-artifacts
 set -e -u
 ROOTFS="$PREFIX/share/debdroid/rootfs"
 CONFIG="$PREFIX/share/debdroid/config"
 PATHBASE="/usr/local/bin:/usr/local/sbin:/usr/local/games:/bin:/sbin:/usr/bin:/usr/sbin:/usr/games"
 STATEFUL="$PREFIX/share/debdroid"
 STATUS="$PREFIX/share/debdroid/rootfs/usr/lib/.libdone.so.9"
+
+RED="$(tput setaf 1)"
+GREEN="$(tput setaf 2)"
+YELLOW="$(tput setaf 3)"
+BOLD="$(tput bold)"
+NOATTR="$(tput sgr0)"
 
 ## Root Detection
 ## Running This script as root will fail and mess up permissions
@@ -23,27 +31,46 @@ check-network-connectivity(){
 	if ping -q -c 1 -W 1 8.8.8.8 >/dev/null 2>&1; then
   		exec
 	else
-  		echo "Cannot connect to network. Try Checking your network connection. Aborting exit code 2"
+  		echo "${RED}Cannot connect to network. Try Checking your network connection. Aborting exit code 2${NOATTR}"
 		exit 2
 	fi
 }
 
+set-suite(){
+	case `echo $SUITE` in
+		stable|buster)
+			flavor="buster" ;;
+		unstable|sid)
+			flavor="sid" ;;
+		oldstable|stretch)
+			flavor="stretch" ;;
+		bullseye|testing)
+			flavor="bullseye" ;;
+		*)
+			flavor="buster" ;;
+	esac
+}
+
 check-dlcache() {
-	if [ -e $HOME/.cache/dlcache.tar.*z ]; then
-		echo "Existing Image File Found. Skipping Download and Extracting the rootfs"
-		echo "Unpacking The Base System.... This may take a few minutes"
-		proot --link2symlink -0 tar -xf $HOME/.cache/dlcache.tar.*z --exclude dev -C $ROOTFS > /dev/null 2>&1
+	if [ -e $HOME/.cache/dlcache-$flavor.tar.*z ]; then
+		echo "${GREEN}${BOLD}Distribution Chosen: ${YELLOW}${flavor}${NOATTR}"
+		echo ""
+		echo "${GREEN}${BOLD}Existing Image File Found. Skipping Download and Extracting the rootfs${NOATTR}"
+		echo "${GREEN}${BOLD}Unpacking The Base System.... This may take a few minutes${NOATTR}"
+		proot --link2symlink -0 tar -xf $HOME/.cache/dlcache-$flavor.tar.*z --exclude dev -C $ROOTFS > /dev/null 2>&1
 	else
-		echo "Downloading the Debian Image file....."
+		echo "${GREEN}${BOLD}Downloading the Debian Image file: ${YELLOW}${flavor}${NOATTR}"
+		echo ""
 		mkdir -p $HOME/.cache >/dev/null 2>&1 &&
-		wget "https://github.com/WMCB-Tech/debdroid-rootfs-repo/raw/master/rootfs/buster/debian-rootfs-${archurl}.tar.xz" -O $HOME/.cache/dlcache.tar.xz &&
-		echo "Unpacking The Base System.... This may take a few minutes"
-		proot --link2symlink -0 tar -xf $HOME/.cache/dlcache.tar.*z --exclude dev -C $ROOTFS > /dev/null 2>&1
+		wget "https://github.com/debuerreotype/docker-debian-artifacts/raw/${archurl}/${flavor}/rootfs.tar.xz" -O $HOME/.cache/dlcache-$flavor.tar.xz &&
+		echo ""
+		echo "${GREEN}${BOLD}Unpacking The Base System.... This may take a few minutes${NOATTR}"
+		proot --link2symlink -0 tar -xf $HOME/.cache/dlcache-$flavor.tar.*z --exclude dev -C $ROOTFS > /dev/null 2>&1
 	fi
 }
 
 show_help(){
-	echo "DebDroid: An Easy to Use Debian Installer for non-rooted devices"
+	echo "${BOLD}${GREEN}DebDroid: An Easy to Use Debian Installer for non-rooted devices"
 	echo ""
 	echo "Usage: debdroid [command]"
 	echo ""
@@ -73,46 +100,57 @@ show_help(){
 	echo "	debdroid --share ~/directory"
 	echo "	debdroid --recieve /opt/code.py"
 	echo ""
+	echo "Supported Distributions: "
+	echo "unstable/sid, stable/buster oldstable/stretch testing/bullseye"
+	echo "You can Install them by typing: "
+	echo ""
+	echo "	debdroid --install <suite>"
+	echo ""
+	echo "If No Suite is specified. then it will install the stable one"
+	echo "NOTE: Sid/Testing Versions may tend to fail the installation${NOATTR}"
+	echo ""
 	exit 2
 }
 
 exitcode(){
 	echo ""
-	echo "Exiting as Requested... Probably Installation Interruption"
-	echo "To fix this. reinstall it by typing 'debdroid --reinstall'"
+	echo "${RED}Exiting as Requested... Probably Installation Interruption"
+	echo "To fix this. please run ${YELLOW}'debdroid --uninstall'${RED} and rerun the install command again${NOATTR}"
 	echo ""
 	exit 2
 }
 
 install-debian() {
+	SUITE="$@"
 	trap 'exitcode' HUP INT QUIT TERM KILL
 	if [ -e $STATUS ]; then
-    		echo "An Existing Installation Found. Please Uninstall a Distro First"
+    		echo "${RED}${BOLD}An Existing Installation Found. Please Uninstall a Distro First${NOATTR}"
 			exit 2
 	else
-    		echo "Preparing to Install a Debian Container."
+    		echo "${GREEN}${BOLD}Preparing to Install a Debian Container.${NOATTR}"
 	fi
 	### Check Network
 	check-network-connectivity
 	### Check for an Architecture
 	case `dpkg --print-architecture` in
 		aarch64)
-			archurl="arm64" ;;
+			archurl="dist-arm64v8" ;;
 		arm)
-			archurl="armhf" ;;
+			archurl="dist-arm32v7" ;;
 		amd64)
-			archurl="amd64" ;;
+			archurl="dist-amd64" ;;
 		x86_64)
-			archurl="amd64" ;;
+			archurl="dist-amd64" ;;
 		i*86)
-			archurl="i386" ;;
+			archurl="dist-i386" ;;
 		x86)
-			archurl="i386" ;;
+			archurl="dist-i386" ;;
 		*)
 			echo "unknown architecture"; exit 1 ;;
 	esac
+	set-suite
 	check-dlcache
-	echo "Configuring the Base System.. This may take Several Minutes"
+	echo "${GREEN}${BOLD}Configuring the Base System.. This may take Several Minutes${NOATTR}"
 	echo ""
 	set-android-groups || true
 	install $CONFIG/stat $ROOTFS/proc/stat &&
@@ -124,24 +162,84 @@ install-debian() {
 	install $CONFIG/hosts $ROOTFS/etc/hosts &&
 	install $CONFIG/libdone.so.9 $ROOTFS/usr/lib/.libdone.so.9 &&
 	install -m 755 $CONFIG/distro-config.sh $ROOTFS/opt/distro-config.sh &&
+	echo "$flavor" > $ROOTFS/.proot.distinfo &&
 	bash $CONFIG/configure.sh &&
-	echo "Cleaning Up....."
+	echo "${GREEN}${BOLD}Cleaning Up.....${NOATTR}"
 	echo ""
 	rm -rf $ROOTFS/opt/distro-config.sh &&
-	echo "Debian Container Successfully Installed. To Start type: debdroid --launch"
+	echo "${GREEN}${BOLD}Debian Container Successfully Installed. To Start type: debdroid --launch${NOATTR}"
+	echo ""
+	exit 1
+}
+
+reinstall() {
+	if [ -e $STATUS ]; then
+    	:
+	else
+		echo "${RED}${BOLD}Cannot Reinstall Debian Container. Container isn't installed${NOATTR}"
+		exit 2
+	fi
+	SUITE="$(cat $ROOTFS/.proot.distinfo)"
+	uninstall || true
+	trap 'exitcode' HUP INT QUIT TERM KILL
+	if [ -e $STATUS ]; then
+    		echo "${RED}${BOLD}An Existing Installation Found. Please Uninstall a Distro First${NOATTR}"
+			exit 2
+	else
+    		echo "${GREEN}${BOLD}Preparing to Install a Debian Container.${NOATTR}"
+	fi
+	### Check Network
+	check-network-connectivity
+	### Check for an Architecture
+	case `dpkg --print-architecture` in
+		aarch64)
+			archurl="dist-arm64v8" ;;
+		arm)
+			archurl="dist-arm32v7" ;;
+		amd64)
+			archurl="dist-amd64" ;;
+		x86_64)
+			archurl="dist-amd64" ;;
+		i*86)
+			archurl="dist-i386" ;;
+		x86)
+			archurl="dist-i386" ;;
+		*)
+			echo "unknown architecture"; exit 1 ;;
+	esac
+	set-suite
+	check-dlcache
+	echo "${GREEN}${BOLD}Configuring the Base System.. This may take Several Minutes${NOATTR}"
+	echo ""
+	set-android-groups || true
+	install $CONFIG/stat $ROOTFS/proc/stat &&
+	install $CONFIG/version $ROOTFS/proc/version &&
+	install $CONFIG/vmstat $ROOTFS/proc/vmstat &&
+	install $CONFIG/uptime $ROOTFS/proc/uptime &&
+	install $CONFIG/loadavg $ROOTFS/proc/loadavg &&
+	install $CONFIG/resolv.conf $ROOTFS/etc/resolv.conf &&
+	install $CONFIG/hosts $ROOTFS/etc/hosts &&
+	install $CONFIG/libdone.so.9 $ROOTFS/usr/lib/.libdone.so.9 &&
+	install -m 755 $CONFIG/distro-config.sh $ROOTFS/opt/distro-config.sh &&
+	echo "$flavor" > $ROOTFS/.proot.distinfo &&
+	bash $CONFIG/configure.sh &&
+	echo "${GREEN}${BOLD}Cleaning Up.....${NOATTR}"
+	echo ""
+	rm -rf $ROOTFS/opt/distro-config.sh &&
+	echo "${GREEN}${BOLD}Debian Container Successfully Installed. To Start type: debdroid --launch${NOATTR}"
 	echo ""
 	exit 1
 }
 
 uninstall() {
-	echo "WARNING: you are about to uninstall a linux distribution in 10 seconds"
-	echo "to stop hit Ctrl-C before Uninstallation"
+	echo "${RED}${BOLD}WARNING: you are about to uninstall a linux distribution in 10 seconds${NOATTR}"
+	echo "${RED}${BOLD}to stop hit Ctrl-C before Uninstallation${NOATTR}"
 	sleep 10 &&
-	echo "Uninstalling an Linux Distro... "
+	echo "${YELLOW}Uninstalling an Linux Distro...${NOATTR}"
 	chmod 777 -R $ROOTFS > /dev/null 2>&1 || true
 	rm -rf $STATEFUL/rootfs > /dev/null 2>&1 &&
 	mkdir $STATEFUL/rootfs > /dev/null 2>&1 &&
-	echo "Debian Container Successfully Uninstalled"
+	echo "${GREEN}${BOLD}Debian Container Successfully Uninstalled${NOATTR}"
 }
 
 set-android-groups(){
@@ -162,26 +260,26 @@ send() {
 	if [ -e $STATUS ]; then
     	:
 	else
-		echo "Cannot stat Debian Container. Please install it using debdroid '--install'"
+		echo "${RED}${BOLD}Cannot stat Debian Container. Please install it using ${YELLOW}debdroid --install${NOATTR}"
 		exit 2
 	fi
 	### Check for an Argument
 	if [ ! -z "$SEND_ARGS" ]; then
 		:
 	else
-		echo "Please Specify a File/Folder to Send"
+		echo "${RED}${BOLD}Please Specify a File/Folder to Send${NOATTR}"
 		exit 2
 	fi
 	### Check for a file to Send
 	if [ ! -e "$SEND_ARGS" ]; then
-		echo "Cannot Send file to the Container: No Such file or Directory"
+		echo "${RED}${BOLD}Cannot Send file to the Container: No Such file or Directory${NOATTR}"
 		exit 2
 	fi
 	### Send files
 	echo ""
-	echo "Sending File: $SEND_ARGS"
+	echo "${YELLOW}${BOLD}Sending File: $SEND_ARGS ${NOATTR}"
 	cp -r $SEND_ARGS $ROOTFS/home/$(cat $ROOTFS/etc/userinfo.rc)/ >/dev/null 2>&1 || true
-	echo "The File $SEND_ARGS successfully sent at your Home Directory"
+	echo "${GREEN}${BOLD}The File $SEND_ARGS successfully sent at your Home Directory${NOATTR}"
 }
 
 share() {
@@ -189,26 +287,26 @@ share() {
 	if [ -e $STATUS ]; then
     	:
 	else
-		echo "Cannot stat Debian Container. Please install it using debdroid '--install'"
+		echo "${RED}${BOLD}Cannot stat Debian Container. Please install it using ${YELLOW}debdroid --install${NOATTR}"
 		exit 2
 	fi
 	### Ask for Directory
 	if [ ! -z "$SHARE_ARGS" ]; then
 		:
 	else
-		echo "Please Specify a Directory to Share"
+		echo "${RED}${BOLD}Please Specify a Directory to Share${NOATTR}"
 		exit 2
 	fi
 	### Check if a directory is specified else abort
 	if [ ! -d "$SHARE_ARGS" ]; then
-		echo "Cannot Apply Share Properties. either you're trying to share a non-directory or directory isn't exists"
+		echo "${RED}${BOLD}Cannot Apply Share Properties. either you're trying to share a non-directory or directory isn't exists${NOATTR}"
 		exit 2
 	fi
 	### Share Directory
-	echo "Applying Share Properties"
+	echo "${YELLOW}${BOLD}Applying Share Properties${NOATTR}"
 	echo "-b $(realpath $SHARE_ARGS):/mnt/shared" > $ROOTFS/.proot.shareinfo
-	echo "The Directory $SHARE_ARGS is now shared and located at /mnt/shared. you can unshare it by typing:"
-	echo "debdroid --unshare"
+	echo "${GREEN}${BOLD}The Directory $SHARE_ARGS is now shared and located at /mnt/shared. you can unshare it by typing:"
+	echo "debdroid --unshare${NOATTR}"
 }
 
 recieve(){
@@ -217,23 +315,23 @@ recieve(){
 	if [ -e $STATUS ]; then
 		:
 	else
-		echo "Cannot stat Debian Container. Please install it using debdroid '--install'"
+		echo "${RED}${BOLD}Cannot stat Debian Container. Please install it using ${YELLOW}debdroid --install${NOATTR}"
 		exit 2
 	fi
 	### Check for an Argument
 	if [ ! -z "$RECIEVE_ARGS" ]; then
 		:
 	else
-		echo "Please Specify an File/Folder to pull"
+		echo "${RED}${BOLD}Please Specify an File/Folder to pull${NOATTR}"
 		exit 2
 	fi
 	### Check for an File to pull
 	if [ ! -e "${ROOTFS}${RECIEVE_ARGS}" ]; then
-		echo "Cannot Pull a file from the container: no such file or directory"
+		echo "${RED}${BOLD}Cannot Pull a file from the container: no such file or directory${NOATTR}"
 		exit 2
 	fi
 	### Pull Files
-	echo "Pulling $RECIEVE_ARGS..." 
+	echo "${YELLOW}${BOLD}Pulling $RECIEVE_ARGS...${NOATTR}" 
 	cp -rf ${ROOTFS}${RECIEVE_ARGS} $PWD >/dev/null 2>&1 || true
 }
 
@@ -241,7 +339,7 @@ unshare(){
 	if [ -e $STATUS ]; then
 		:
 	else
-		echo "Cannot stat Debian Container. Please install it using debdroid '--install'"
+		echo "${RED}${BOLD}Cannot stat Debian Container. Please install it using ${YELLOW}debdroid --install${NOATTR}"
 		exit 2
 	fi
 	### Simply delete the metadata
@@ -253,7 +351,7 @@ launch() {
 	if [ -e $STATUS ]; then
     	:
 	else
-		echo "Cannot start Debian Container. Please install it using debdroid --install"
+		echo "${RED}${BOLD}Cannot start Debian Container. Please install it using ${YELLOW}debdroid --install${NOATTR}"
 		exit 2
 	fi
 	### Check for Extra Shares
@@ -300,7 +398,7 @@ launch-su() {
 	if [ -e $STATUS ]; then
     	:
 	else
-		echo "Cannot start Debian Container. Please install it using debdroid --install"
+		echo "${RED}${BOLD}Cannot start Debian Container. Please install it using ${YELLOW}debdroid --install${NOATTR}"
 		exit 2
 	fi
 	### Check for Extra Shares
@@ -346,7 +444,7 @@ launch-isol() {
 	if [ -e $STATUS ]; then
     	:
 	else
-		echo "Cannot start Debian Container. Please install it using debdroid --install"
+		echo "${RED}${BOLD}Cannot start Debian Container. Please install it using ${YELLOW}debdroid --install${NOATTR}"
 		exit 2
 	fi
 	unset LD_PRELOAD
@@ -384,7 +482,7 @@ parse-cmd() {
 	if [ -e $STATUS ]; then
     	:
 	else
-		echo "Cannot start Debian Container. Please install it using debdroid --install"
+		echo "${RED}${BOLD}Cannot start Debian Container. Please install it using ${YELLOW}debdroid --install${NOATTR}"
 		exit 2
 	fi
 	### Check for Extra Shares
@@ -427,7 +525,7 @@ parse-cmd-isol() {
 	if [ -e $STATUS ]; then
     	:
 	else
-		echo "Cannot start Debian Container. Please install it using debdroid --install"
+		echo "${RED}${BOLD}Cannot start Debian Container. Please install it using ${YELLOW}debdroid --install${NOATTR}"
 		exit 2
 	fi
 	unset LD_PRELOAD
@@ -457,17 +555,6 @@ parse-cmd-isol() {
 	sudo -u $(cat $ROOTFS/etc/userinfo.rc) "$@"
 }
 
-reinstall() {
-	if [ -e $STATUS ]; then
-    	:
-	else
-		echo "Cannot Reinstall Debian Container. Debian isn't installed"
-		exit 2
-	fi
-	uninstall || true
-	install-debian
-}
-
 if [ $# = 0 ]; then
 	show_help
 fi
@@ -476,7 +563,7 @@ CMD="$1"
 shift 1
 
 case "$CMD" in
-	--install) install-debian;;
+	--install) install-debian "$@" ;;
 	--uninstall)
 		uninstall
 		;;
@@ -519,5 +606,5 @@ case "$CMD" in
 	---)
 		parse-cmd-isol "$@"
 		;;
-	*) echo "Unknown Command: '$CMD'"; exit 2;;
+	*) echo "${RED}Unknown Command: '$CMD' ${NOATTR}"; exit 2;;
 esac
