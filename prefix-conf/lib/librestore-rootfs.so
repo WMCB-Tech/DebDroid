@@ -1,29 +1,36 @@
 #!/data/data/com.termux/files/usr/bin/bash
 STATEFUL="$PREFIX/share/debdroid"
+
+RED="$(tput setaf 1)"
+GREEN="$(tput setaf 2)"
+YELLOW="$(tput setaf 3)"
+BOLD="$(tput bold)"
+NOATTR="$(tput sgr0)"
+
 set -e -u
 
 while true; do
-    read -p "WARNING: Importing rootfs will replace your installation. do you want to continue [y/N] " yn
+    read -p "${RED}${BOLD}WARNING: Importing rootfs will replace your installation. do you want to continue [y/N] ${NOATTR}" yn
     case $yn in
         [Yy]* ) exec; break;;
-        [Nn]* ) echo "Aborting..."; exit 2;;
-        * ) echo "Aborting..."; exit 2;;
+        [Nn]* ) echo "${YELLOW}${BOLD}Aborting...${NOATTR}"; exit 2;;
+        * ) echo "${YELLOW}${BOLD}Aborting..."${NOATTR}; exit 2;;
     esac
 done
 
-read -e -p "Enter the path of your backups. You may use tab for Autocompletion: " backup
+read -e -p "${GREEN}${BOLD}Enter the path of your backups. You may use tab for Autocompletion: ${NOATTR}" backup
 ### Check for Backup
 if [ -e "$backup" ]; then
     exec
 else
-    echo "An error has occurred: No such file or directory. aborting exit code 2"
+    echo "${RED}${BOLD}An error has occurred: No such file or directory. aborting exit code 2${NOATTR}"
     exit 2
 fi
 
-echo "Preparing to import..."
+echo "${YELLOW}${BOLD}Preparing to import...${NOATTR}"
 chmod 777 $STATEFUL/rootfs -R > /dev/null 2>&1 || true
 rm -rf $STATEFUL/rootfs > /dev/null 2>&1
-echo "Importing the Container"
+echo "${YELLOW}${BOLD}Importing the Container${NOATTR}"
 proot --link2symlink -0 tar -zxf "$backup" -C $STATEFUL >/dev/null 2>&1
-echo "Container successfully imported..."
+echo "${GREEN}${BOLD}Container successfully imported...${NOATTR}"
 exit 1
