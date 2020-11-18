@@ -46,10 +46,10 @@ After all packages is installed. you can install it by typing: \
 By default. it will install a fresh stable version of Debian if no other arguments is specified
 
 ### Supported Debian Suite
-* `unstable`/`suite`
+* `unstable`/`sid`
 * `testing`/`bullseye`
 * `stable`/`buster`
-* `oldstable`/`stretch` \
+* `oldstable`/`stretch`
 ### Unsupported Debian Suite
 Unsupported Debian Versions (Here are the debian versions that can cause problems and never be added)
 * `oldoldstable`/`jessie`
