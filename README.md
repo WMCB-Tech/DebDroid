@@ -111,7 +111,7 @@ P.S. Used VS Code for development
 # Contributing
 You can help this project by contributing. (if you have bash scripting skills) and help DebDroid Strong 
 
-You can help by: \
+You can help by: 
 * Forking DebDroid and creating pull requests
 * Being a Contributor
 
