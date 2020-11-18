@@ -108,6 +108,15 @@ To package your own debdroid. simply package the directory with `dpkg-deb`
 
 P.S. Used VS Code for development
 
+# Contributing
+You can help this project by contributing. (if you have bash scripting skills) and help DebDroid Strong 
+
+You can help by: \
+* Forking DebDroid and creating pull requests
+* Being a Contributor
+
+If you don't have coding skills. you can file or submit bug reports to help improve this project
+
 # Credits
 [PRoot](https://proot-me.github.io/) \
 [Termux](https://termux.com/)
