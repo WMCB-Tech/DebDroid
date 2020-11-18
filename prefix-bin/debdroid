@@ -274,7 +274,7 @@ send() {
 	### Send files
 	echo ""
 	echo "${YELLOW}${BOLD}Sending File: $SEND_ARGS ${NOATTR}"
-	cp -r $SEND_ARGS $ROOTFS/home/$(cat $ROOTFS/etc/userinfo.rc)/ >/dev/null 2>&1 || true
+	cp -r "$SEND_ARGS" $ROOTFS/home/$(cat $ROOTFS/etc/userinfo.rc)/ >/dev/null 2>&1 || true
 	echo "${GREEN}${BOLD}The File $SEND_ARGS successfully sent at your Home Directory${NOATTR}"
 }
 
