@@ -53,7 +53,7 @@ By default. it will install a fresh stable version of Debian if no other argumen
 Jessie/oldoldstable isn't supported yet due to unported architecture to arm64 since 2014
 
 You can install other than stable by typing: \
-`debdroid --install <suite>
+`debdroid --install <suite>`
 
 The Installation will take several minutes depending on your network connection
 
