@@ -2,7 +2,7 @@
 ### Configure Script for Debian System after Postinstall
 ### Runs in proot. Essential Bindings only
 unset LD_PRELOAD
-proot --link2symlink --kill-on-exit \
+proot --link2symlink --kill-on-exit -k 4.14.206 \
  -0 -r $PREFIX/share/debdroid/rootfs \
  -b /dev \
  -b /proc \
