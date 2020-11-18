@@ -3,8 +3,8 @@
 ## Make a simple dialog to greet the users
 dialog --title "Information" \
  --msgbox \
- "Welcome to DebDroid. an easy debian installer. if you have problems. join my discord server. or make an issue in github\
-  Learn more about debian in https://wiki.debian.org/ and tldp.org. \
-  To Uninstall Debian. type 'debdroid --uninstall'" \
+ "Welcome to DebDroid. an easy debian installer. to learn more about debdroid\
+  Please visit http://github.com/WMCB-Tech/DebDroid/ and it's features.\
+  To Uninstall Debian. type 'debdroid --uninstall'. if you have issues\
+  please share it with Github or Discord \
  13 40
-
