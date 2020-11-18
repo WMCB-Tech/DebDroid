@@ -18,9 +18,9 @@ else
     exit 2
 fi
 ### Next Step
-echo "${GREEN}${BOLD}NOTICE: Please close all your sessions before continuing. to prevent permission denials${NOATTR}"
+echo "${RED}${BOLD}NOTICE: Please close all your sessions before continuing. to prevent permission denials${NOATTR}"
 ### Ask for User Prompt
-read -e -p "${RED}${BOLD}Please Enter the name to export your backups: ${NOATTR}" backup
+read -e -p "${GREEN}${BOLD}Please Enter the name to export your backups${NOATTR}: " backup
 
 ### Start Backup
 echo ""

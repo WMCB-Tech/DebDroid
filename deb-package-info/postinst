@@ -4,7 +4,7 @@
 dialog --title "Information" \
  --msgbox \
  "Welcome to DebDroid. an easy debian installer. to learn more about debdroid\
-  Please visit http://github.com/WMCB-Tech/DebDroid/ and it's features.\
+  Please visit http://github.com/WMCB-Tech/DebDroid and it's features.\
   To Uninstall Debian. type 'debdroid --uninstall'. if you have issues\
-  please share it with Github or Discord \
+  please share it with Github or Discord" \
  13 40
