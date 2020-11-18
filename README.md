@@ -50,7 +50,15 @@ By default. it will install a fresh stable version of Debian if no other argumen
 * `testing`/`bullseye`
 * `stable`/`buster`
 * `oldstable`/`stretch` \
-Jessie/oldoldstable isn't supported yet due to unported architecture to arm64 since 2014
+### Unsupported Debian Suite
+Unsupported Debian Versions (Here are the debian versions that can cause problems and never be added)
+* `oldoldstable`/`jessie`
+* `wheezy`
+* `squeeze`
+* `lenny` \
+And so on
+
+Ubuntu/Kali is unsupported
 
 You can install other than stable by typing: \
 `debdroid --install <suite>`
