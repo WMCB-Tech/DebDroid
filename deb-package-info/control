@@ -3,6 +3,6 @@ Version: 3.00
 Section: Virtualization
 Priority: optional 
 Architecture: all 
-Depends: wget, dialog, proot, tar, pulseaudio
+Depends: wget, dialog, proot, tar, pulseaudio, ncurses-utils
 Maintainer: @wmcbtech30
 Description: Run Debian Without Root on your Android Device
