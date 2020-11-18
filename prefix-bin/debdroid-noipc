@@ -23,7 +23,7 @@ NOATTR="$(tput sgr0)"
 ## Running This script as root will fail and mess up permissions
 ## And Prevent this script to run inside fakeroot also
 if [[ $EUID -eq 0 ]]; then
-  echo "This script should not be run as ROOT. please use linux deploy instead" 1>&2
+  echo "${RED}${BOLD}This script should not be run as ROOT. please use linux deploy instead${NOATTR}" 1>&2
   exit 1
 fi
 
@@ -31,7 +31,7 @@ check-network-connectivity(){
 	if ping -q -c 1 -W 1 8.8.8.8 >/dev/null 2>&1; then
   		exec
 	else
-  		echo "${RED}Cannot connect to network. Try Checking your network connection. Aborting exit code 2${NOATTR}"
+  		echo "${RED}${BOLD}Cannot connect to network. Try Checking your network connection. Aborting exit code 2${NOATTR}"
 		exit 2
 	fi
 }
@@ -132,21 +132,17 @@ install-debian() {
 	### Check Network
 	check-network-connectivity
 	### Check for an Architecture
-	case `dpkg --print-architecture` in
-		aarch64)
+	case `uname -m` in
+		aarch64|arm64)
 			archurl="dist-arm64v8" ;;
-		arm)
+		arm|armv7l|armv8l)
 			archurl="dist-arm32v7" ;;
-		amd64)
+		amd64|x86_64)
 			archurl="dist-amd64" ;;
-		x86_64)
-			archurl="dist-amd64" ;;
-		i*86)
-			archurl="dist-i386" ;;
-		x86)
+		x86|i*86)
 			archurl="dist-i386" ;;
 		*)
-			echo "unknown architecture"; exit 1 ;;
+			echo "${RED}${BOLD}unknown architecture${NOATTR}"; exit 1 ;;
 	esac
 	set-suite
 	check-dlcache
@@ -278,7 +274,7 @@ send() {
 	### Send files
 	echo ""
 	echo "${YELLOW}${BOLD}Sending File: $SEND_ARGS ${NOATTR}"
-	cp -r $SEND_ARGS $ROOTFS/home/$(cat $ROOTFS/etc/userinfo.rc)/ >/dev/null 2>&1 || true
+	cp -r "$SEND_ARGS" $ROOTFS/home/$(cat $ROOTFS/etc/userinfo.rc)/ >/dev/null 2>&1 || true
 	echo "${GREEN}${BOLD}The File $SEND_ARGS successfully sent at your Home Directory${NOATTR}"
 }
 
@@ -361,7 +357,7 @@ launch() {
 	unset LD_PRELOAD
 	start-pulseaudio
 	proot --link2symlink --kill-on-exit \
-	-0 -r $ROOTFS -p -H \
+	-0 -r $ROOTFS -p -H -k 4.14.206 \
 	$SHARE_PROPERTIES \
 	-b /dev \
 	-b /proc \
@@ -408,7 +404,7 @@ launch-su() {
 	unset LD_PRELOAD
 	start-pulseaudio
 	proot --link2symlink --kill-on-exit \
-	-0 -r $ROOTFS -p -H \
+	-0 -r $ROOTFS -p -H -k 4.14.206 \
 	$SHARE_PROPERTIES \
 	-b /dev \
 	-b /proc \
@@ -450,7 +446,7 @@ launch-isol() {
 	unset LD_PRELOAD
 	start-pulseaudio
 	proot --link2symlink --kill-on-exit \
-	-0 -r $ROOTFS -p -H \
+	-0 -r $ROOTFS -p -H -k 4.14.206 \
 	-b /dev \
 	-b /proc \
 	-b /sys \
@@ -491,7 +487,7 @@ parse-cmd() {
 	fi
 	unset LD_PRELOAD
 	proot --link2symlink --kill-on-exit \
-	-0 -r $ROOTFS -p -H \
+	-0 -r $ROOTFS -p -H -k 4.14.206 \
 	$SHARE_PROPERTIES \
 	-b /dev \
 	-b /proc \
@@ -530,7 +526,7 @@ parse-cmd-isol() {
 	fi
 	unset LD_PRELOAD
 	proot --link2symlink --kill-on-exit \
-	-0 -r $ROOTFS -p -H \
+	-0 -r $ROOTFS -p -H -k 4.14.206 \
 	-b /dev \
 	-b /proc \
 	-b /sys \
