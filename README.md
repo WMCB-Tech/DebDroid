@@ -43,6 +43,18 @@ and the `./path/to` is where the location of your file. copy-pasting steps is no
 After all packages is installed. you can install it by typing: \
 ```debdroid --install```
 
+By default. it will install a fresh stable version of Debian if no other arguments is specified
+
+### Supported Debian Suite
+* `unstable`/`suite`
+* `testing`/`bullseye`
+* `stable`/`buster`
+* `oldstable`/`stretch` \
+Jessie/oldoldstable isn't supported yet due to unported architecture to arm64 since 2014
+
+You can install other than stable by typing: \
+`debdroid --install <suite>
+
 The Installation will take several minutes depending on your network connection
 
 If it asks you to enter your UNIX Username. you can type your own username to add it to sudoers \
