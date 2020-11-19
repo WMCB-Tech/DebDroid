@@ -15,24 +15,20 @@ sed -i 's/main/main contrib non-free/g' /etc/apt/sources.list >/dev/null 2>&1 ||
 apt update
 apt upgrade -y || true
 apt install -f -y || true
-apt install nano sudo busybox udisks2 dbus-x11 locales pulseaudio -y || true
+apt install nano sudo busybox udisks2 dbus-x11 locales pulseaudio procps --no-install-recommends -y || true
 apt install -f -y || true
 dpkg --configure -a || true
 apt autoremove -y || true
-apt clean
+apt clean || true
 
 ## Fix Problems
 echo ""
-echo "Exporting libgcc_s.so.1 as a walkaround for Tigervnc"
+echo "Setting some walkarounds for Tigervnc"
 echo "export LD_PRELOAD=$(find /usr/lib -name libgcc_s.so.1)" > /etc/profile.d/walkaround.sh
 echo "Adding /sbin path for non-root users"
 echo "export PATH=/usr/local/bin:/usr/local/sbin:/usr/local/games:/bin:/sbin:/usr/bin:/usr/sbin:/usr/games" > /etc/profile.d/sbin.sh
 echo "export LANG=C.UTF-8" > /etc/profile.d/langenv.sh
 echo "export PULSE_SERVER=127.0.0.1" > /etc/profile.d/pulse.sh
-
-## Symlink top and w commands for workarounds and allow execution for them
-ln -rs /bin/busybox /usr/local/bin/top
-ln -rs /bin/busybox /usr/local/bin/w
 
 ## Configure udisks2 and dbus as if udisks2 interrupts apt
 echo ""
@@ -46,6 +42,15 @@ echo "Configuring User Accounts.... "
 read -p "Enter your UNIX username (lower case): " username
 useradd -s /bin/bash -m $username
 passwd $username
-echo "Adding the user to sudoers.d file"
+echo "Adding the user to sudoers for sudo access"
 echo "$username ALL=(ALL:ALL) NOPASSWD:ALL" > /etc/sudoers.d/$username
 echo "$username" > /etc/userinfo.rc
+
+## Check for necessary files to see if installation is successful. will perform sanity checks
+ls /etc/userinfo.rc >/dev/null 2>&1
+which ps >/dev/null 2>&1
+which sudo >/dev/null 2>&1
+which busybox >/dev/null 2>&1
+which pulseaudio >/dev/null 2>&1
+which dbus-launch >/dev/null 2>&1
+which nano >/dev/null 2>&1
