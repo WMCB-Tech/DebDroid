@@ -38,14 +38,14 @@ check-network-connectivity(){
 
 set-suite(){
 	case `echo $SUITE` in
-		stable|buster)
-			flavor="buster" ;;
-		unstable|sid)
-			flavor="sid" ;;
 		oldstable|stretch)
 			flavor="stretch" ;;
-		bullseye|testing)
-			flavor="bullseye" ;;
+		stable|buster)
+			flavor="buster" ;;
+		testing|bullseye)
+			flavor="testing" ;;
+		unstable|sid)
+			flavor="sid" ;;
 		*)
 			flavor="buster" ;;
 	esac
@@ -101,12 +101,12 @@ show_help(){
 	echo "	debdroid --recieve /opt/code.py"
 	echo ""
 	echo "Supported Distributions: "
-	echo "unstable/sid, stable/buster oldstable/stretch testing/bullseye"
-	echo "You can Install them by typing: "
+	echo "${YELLOW}${BOLD}unstable/sid, stable/buster oldstable/stretch testing/bullseye"
+	echo "${GREEN}${BOLD}You can Install them by typing: "
 	echo ""
-	echo "	debdroid --install <suite>"
+	echo "	debdroid --install ${YELLOW}${BOLD}<suite>"
 	echo ""
-	echo "If No Suite is specified. then it will install the stable one"
+	echo "${GREEN}${BOLD}If No Suite is specified. then it will install the stable one"
 	echo "NOTE: Sid/Testing Versions may tend to fail the installation${NOATTR}"
 	echo ""
 	exit 2
@@ -118,6 +118,22 @@ exitcode(){
 	echo "To fix this. please run ${YELLOW}'debdroid --uninstall'${RED} and rerun the install command again${NOATTR}"
 	echo ""
 	exit 2
+}
+
+check-install-ok() {
+	if bash $CONFIG/configure.sh; then
+		rm $ROOTFS/opt/distro-config.sh || true
+		echo "${GREEN}${BOLD}Debian Container successfully installed. All has gone well, to start the container type:"
+		echo "${YELLOW}${BOLD}debdroid --launch${NOATTR}"
+		exit 0
+	else
+		rm $ROOTFS/opt/distro-config.sh || true
+		echo "${RED}${BOLD}One or more errors occured during the installation"
+		echo "Possible causes are Incomplete apt install, invalid username or Broken packages in sid/testing"
+		echo ""
+		echo "To correct this problem. Please reinstall it or choose the stable suite${NOATTR}"
+		exit 2
+	fi
 }
 
 install-debian() {
@@ -159,13 +175,7 @@ install-debian() {
 	install $CONFIG/libdone.so.9 $ROOTFS/usr/lib/.libdone.so.9 &&
 	install -m 755 $CONFIG/distro-config.sh $ROOTFS/opt/distro-config.sh &&
 	echo "$flavor" > $ROOTFS/.proot.distinfo &&
-	bash $CONFIG/configure.sh &&
-	echo "${GREEN}${BOLD}Cleaning Up.....${NOATTR}"
-	echo ""
-	rm -rf $ROOTFS/opt/distro-config.sh &&
-	echo "${GREEN}${BOLD}Debian Container Successfully Installed. To Start type: debdroid --launch${NOATTR}"
-	echo ""
-	exit 1
+	check-install-ok
 }
 
 reinstall() {
@@ -218,13 +228,7 @@ reinstall() {
 	install $CONFIG/libdone.so.9 $ROOTFS/usr/lib/.libdone.so.9 &&
 	install -m 755 $CONFIG/distro-config.sh $ROOTFS/opt/distro-config.sh &&
 	echo "$flavor" > $ROOTFS/.proot.distinfo &&
-	bash $CONFIG/configure.sh &&
-	echo "${GREEN}${BOLD}Cleaning Up.....${NOATTR}"
-	echo ""
-	rm -rf $ROOTFS/opt/distro-config.sh &&
-	echo "${GREEN}${BOLD}Debian Container Successfully Installed. To Start type: debdroid --launch${NOATTR}"
-	echo ""
-	exit 1
+	check-install-ok
 }
 
 uninstall() {
@@ -254,7 +258,7 @@ set-android-groups(){
 send() {
 	SEND_ARGS="$@"
 	if [ -e $STATUS ]; then
-    	:
+		:
 	else
 		echo "${RED}${BOLD}Cannot stat Debian Container. Please install it using ${YELLOW}debdroid --install${NOATTR}"
 		exit 2
@@ -272,7 +276,6 @@ send() {
 		exit 2
 	fi
 	### Send files
-	echo ""
 	echo "${YELLOW}${BOLD}Sending File: $SEND_ARGS ${NOATTR}"
 	cp -r "$SEND_ARGS" $ROOTFS/home/$(cat $ROOTFS/etc/userinfo.rc)/ >/dev/null 2>&1 || true
 	echo "${GREEN}${BOLD}The File $SEND_ARGS successfully sent at your Home Directory${NOATTR}"
