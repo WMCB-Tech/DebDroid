@@ -112,8 +112,18 @@ If you don't have coding skills. you can file or submit bug reports to help impr
 
 # Credits
 [PRoot](https://proot-me.github.io/) \
-[Termux](https://termux.com/)
+[Termux](https://termux.com/) \
+[PulseAudio](https://pulseaudio.org)
 
+# Similar Projects
+[termux/proot-distro](https://github.com/termux/proot-distro) \
+[YadominJinta/atilo](https://github.com/YadominJinta/atilo) \
+[SDRausty/TermuxArch](https://github.com/SDRausty/TermuxArch) \
+[Hax4us/TermuxAlpine](https://github.com/Hax4us/TermuxAlpine) \
+[Hax4us/Nethunter-In-Termux](https://github.com/Hax4us/Nethunter-In-Termux) \
+[nmilosev/termux-fedora](https://github.com/nmilosev/termux-fedora) \
+[Neo-Oli/Termux-Ubuntu](https://github.com/Neo-Oli/termux-ubuntu) \
+[gwenhael-le-moine/TermuxSlack](https://github.com/gwenhael-le-moine/TermuxSlack)
 
 # Stay In Touched.
 [Discord](http://bit.ly/WMCBDiscord) \
