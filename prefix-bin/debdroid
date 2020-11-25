@@ -1,11 +1,11 @@
 #!/data/data/com.termux/files/usr/bin/bash
-### DEBDROID v3.00.
+### DEBDROID v3.02.
 ### Made By WMCB Tech @wmcbtech30
 ### This script should not be modified at some cases
 ### Dependencies Required
 ### proot, tar, wget, dialog, pulseaudio
 ###
-### Rootfs Hosting - https://github.com/debuerreotype/docker-debian-artifacts
+### Rootfs Hosting - https://jenkins.linuxcontainers.org/
 set -e -u
 ROOTFS="$PREFIX/share/debdroid/rootfs"
 CONFIG="$PREFIX/share/debdroid/config"
@@ -43,7 +43,7 @@ set-suite(){
 		stable|buster)
 			flavor="buster" ;;
 		testing|bullseye)
-			flavor="testing" ;;
+			flavor="bullseye" ;;
 		unstable|sid)
 			flavor="sid" ;;
 		*)
@@ -62,7 +62,7 @@ check-dlcache() {
 		echo "${GREEN}${BOLD}Downloading the Debian Image file: ${YELLOW}${flavor}${NOATTR}"
 		echo ""
 		mkdir -p $HOME/.cache >/dev/null 2>&1 &&
-		wget "https://github.com/debuerreotype/docker-debian-artifacts/raw/${archurl}/${flavor}/rootfs.tar.xz" -O $HOME/.cache/dlcache-$flavor.tar.xz &&
+		wget "https://jenkins.linuxcontainers.org/job/image-debian/architecture=${archurl},release=${flavor},variant=default/lastSuccessfulBuild/artifact/rootfs.tar.xz" -O $HOME/.cache/dlcache-$flavor.tar.xz &&
 		echo ""
 		echo "${GREEN}${BOLD}Unpacking The Base System.... This may take a few minutes${NOATTR}"
 		proot --link2symlink -0 tar -xf $HOME/.cache/dlcache-$flavor.tar.*z --exclude dev -C $ROOTFS > /dev/null 2>&1
@@ -150,13 +150,13 @@ install-debian() {
 	### Check for an Architecture
 	case `uname -m` in
 		aarch64|arm64)
-			archurl="dist-arm64v8" ;;
+			archurl="arm64" ;;
 		arm|armv7l|armv8l)
-			archurl="dist-arm32v7" ;;
+			archurl="armhf" ;;
 		amd64|x86_64)
-			archurl="dist-amd64" ;;
+			archurl="amd64" ;;
 		x86|i*86)
-			archurl="dist-i386" ;;
+			archurl="i386" ;;
 		*)
 			echo "${RED}${BOLD}unknown architecture${NOATTR}"; exit 1 ;;
 	esac
@@ -197,21 +197,17 @@ reinstall() {
 	### Check Network
 	check-network-connectivity
 	### Check for an Architecture
-	case `dpkg --print-architecture` in
-		aarch64)
-			archurl="dist-arm64v8" ;;
-		arm)
-			archurl="dist-arm32v7" ;;
-		amd64)
-			archurl="dist-amd64" ;;
-		x86_64)
-			archurl="dist-amd64" ;;
-		i*86)
-			archurl="dist-i386" ;;
-		x86)
-			archurl="dist-i386" ;;
+	case `uname -m` in
+		aarch64|arm64)
+			archurl="arm64" ;;
+		arm|armv7l|armv8l)
+			archurl="armhf" ;;
+		amd64|x86_64)
+			archurl="amd64" ;;
+		x86|i*86)
+			archurl="i386" ;;
 		*)
-			echo "unknown architecture"; exit 1 ;;
+			echo "${RED}${BOLD}unknown architecture${NOATTR}"; exit 1 ;;
 	esac
 	set-suite
 	check-dlcache
