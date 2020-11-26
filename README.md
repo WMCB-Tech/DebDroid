@@ -48,6 +48,9 @@ I assume you're installing stable
 
 By default. it will install a fresh stable version of Debian if no other arguments is specified
 
+You can install other than stable by typing: \
+`debdroid --install <suite>`
+
 ### Supported Debian Suite
 * `unstable`/`sid`
 * `testing`/`bullseye`
@@ -64,9 +67,6 @@ And so on
 More information can be Accessed [Here](https://github.com/WMCB-Tech/DebDroid/wiki#unsupported-suitesflavors)
 
 Ubuntu/Kali is unsupported
-
-You can install other than stable by typing: \
-`debdroid --install <suite>`
 
 The Installation will take several minutes depending on your network connection
 
