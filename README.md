@@ -44,6 +44,8 @@ and the `./path/to` is where the location of your file. copy-pasting steps is no
 After all packages is installed. you can install it by typing: \
 ```debdroid --install```
 
+I assume you're installing stable
+
 By default. it will install a fresh stable version of Debian if no other arguments is specified
 
 ### Supported Debian Suite
@@ -59,7 +61,7 @@ Unsupported Debian Versions (Here are the debian versions that can cause problem
 * `lenny` \
 And so on
 
-More information can be Accessed [Here](https://github.com/WMCB-Tech/DebDroid/wiki#unsupported-suitesflavors}
+More information can be Accessed [Here](https://github.com/WMCB-Tech/DebDroid/wiki#unsupported-suitesflavors)
 
 Ubuntu/Kali is unsupported
 
