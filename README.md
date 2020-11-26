@@ -59,6 +59,8 @@ Unsupported Debian Versions (Here are the debian versions that can cause problem
 * `lenny` \
 And so on
 
+More information can be Accessed [Here](https://github.com/WMCB-Tech/DebDroid/wiki#unsupported-suitesflavors}
+
 Ubuntu/Kali is unsupported
 
 You can install other than stable by typing: \
