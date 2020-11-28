@@ -9,7 +9,7 @@
 set -e -u
 ROOTFS="$PREFIX/share/debdroid/rootfs"
 CONFIG="$PREFIX/share/debdroid/config"
-PATHBASE="/usr/local/bin:/usr/local/sbin:/usr/local/games:/bin:/sbin:/usr/bin:/usr/sbin:/usr/games"
+PATHBASE="/usr/local/bin:/usr/local/sbin:/usr/local/games:/usr/bin:/usr/sbin:/usr/games:/bin:/sbin"
 STATEFUL="$PREFIX/share/debdroid"
 STATUS="$PREFIX/share/debdroid/rootfs/usr/lib/.libdone.so.9"
 
@@ -165,13 +165,13 @@ install-debian() {
 	echo "${GREEN}${BOLD}Configuring the Base System.. This may take Several Minutes${NOATTR}"
 	echo ""
 	set-android-groups || true
-	install $CONFIG/stat $ROOTFS/proc/stat &&
-	install $CONFIG/version $ROOTFS/proc/version &&
-	install $CONFIG/vmstat $ROOTFS/proc/vmstat &&
-	install $CONFIG/uptime $ROOTFS/proc/uptime &&
-	install $CONFIG/loadavg $ROOTFS/proc/loadavg &&
-	install $CONFIG/resolv.conf $ROOTFS/etc/resolv.conf &&
-	install $CONFIG/hosts $ROOTFS/etc/hosts &&
+	install $CONFIG/libstat.so $ROOTFS/proc/stat &&
+	install $CONFIG/libversion.so $ROOTFS/proc/version &&
+	install $CONFIG/libvmstat.so $ROOTFS/proc/vmstat &&
+	install $CONFIG/libuptime.so $ROOTFS/proc/uptime &&
+	install $CONFIG/libloadavg.so $ROOTFS/proc/loadavg &&
+	install $CONFIG/libresolv.conf.so $ROOTFS/etc/resolv.conf &&
+	install $CONFIG/libhosts.so $ROOTFS/etc/hosts &&
 	install $CONFIG/libdone.so.9 $ROOTFS/usr/lib/.libdone.so.9 &&
 	install -m 755 $CONFIG/distro-config.sh $ROOTFS/opt/distro-config.sh &&
 	echo "$flavor" > $ROOTFS/.proot.distinfo &&
@@ -214,13 +214,13 @@ reinstall() {
 	echo "${GREEN}${BOLD}Configuring the Base System.. This may take Several Minutes${NOATTR}"
 	echo ""
 	set-android-groups || true
-	install $CONFIG/stat $ROOTFS/proc/stat &&
-	install $CONFIG/version $ROOTFS/proc/version &&
-	install $CONFIG/vmstat $ROOTFS/proc/vmstat &&
-	install $CONFIG/uptime $ROOTFS/proc/uptime &&
-	install $CONFIG/loadavg $ROOTFS/proc/loadavg &&
-	install $CONFIG/resolv.conf $ROOTFS/etc/resolv.conf &&
-	install $CONFIG/hosts $ROOTFS/etc/hosts &&
+	install $CONFIG/libstat.so $ROOTFS/proc/stat &&
+	install $CONFIG/libversion.so $ROOTFS/proc/version &&
+	install $CONFIG/libvmstat.so $ROOTFS/proc/vmstat &&
+	install $CONFIG/libuptime.so $ROOTFS/proc/uptime &&
+	install $CONFIG/libloadavg.so $ROOTFS/proc/loadavg &&
+	install $CONFIG/libresolv.conf.so $ROOTFS/etc/resolv.conf &&
+	install $CONFIG/libhosts.so $ROOTFS/etc/hosts &&
 	install $CONFIG/libdone.so.9 $ROOTFS/usr/lib/.libdone.so.9 &&
 	install -m 755 $CONFIG/distro-config.sh $ROOTFS/opt/distro-config.sh &&
 	echo "$flavor" > $ROOTFS/.proot.distinfo &&
