@@ -13,6 +13,6 @@ proot --link2symlink --kill-on-exit -k 4.14.206 \
  TERM=$TERM \
  USER=root \
  HOME=/root \
- PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/games:/usr/local/bin:/usr/local/sbin:/usr/local/games:/opt \
+ PATH=/usr/local/bin:/usr/local/sbin:/usr/local/games:/usr/bin:/usr/sbin:/usr/games:/bin:/sbin:/opt \
  LANG=C.UTF-8 \
  /opt/distro-config.sh

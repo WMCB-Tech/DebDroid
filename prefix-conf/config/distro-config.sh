@@ -11,6 +11,9 @@ set -e -u
 ## Add 'contrib non-free' componenets
 sed -i 's/main/main contrib non-free/g' /etc/apt/sources.list >/dev/null 2>&1 || true
 
+## Delete Docker Related files as if they're not essential and may cause problems
+rm -rf /etc/apt/apt.conf.d/docker-* >/dev/null 2>&1 || true
+
 ## Install Packages and Fix segfaults as well
 apt update
 apt upgrade -y || true
@@ -26,7 +29,7 @@ echo ""
 echo "Setting some walkarounds for Tigervnc"
 echo "export LD_PRELOAD=$(find /usr/lib -name libgcc_s.so.1)" > /etc/profile.d/walkaround.sh
 echo "Adding /sbin path for non-root users"
-echo "export PATH=/usr/local/bin:/usr/local/sbin:/usr/local/games:/bin:/sbin:/usr/bin:/usr/sbin:/usr/games" > /etc/profile.d/sbin.sh
+echo "export PATH=/usr/local/bin:/usr/local/sbin:/usr/local/games:/usr/bin:/usr/sbin:/usr/games:/bin:/sbin" > /etc/profile.d/sbin.sh
 echo "export LANG=C.UTF-8" > /etc/profile.d/langenv.sh
 echo "export PULSE_SERVER=127.0.0.1" > /etc/profile.d/pulse.sh
 
