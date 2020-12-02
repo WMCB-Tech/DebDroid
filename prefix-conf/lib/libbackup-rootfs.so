@@ -10,6 +10,15 @@ NOATTR="$(tput sgr0)"
 
 set -e -u
 
+interrupt(){
+	echo ""
+	echo "${YELLOW}${BOLD}WARNING:${RED} Interrupt Signal Recieved... exiting${NOATTR}"
+    echo ""
+	exit 2
+}
+
+trap 'interrupt' HUP INT QUIT TERM KILL
+
 ## Validate Rootfs
 if [ -e $STATUS ]; then
     exec
@@ -20,13 +29,11 @@ fi
 ### Next Step
 echo "${RED}${BOLD}NOTICE: Please close all your sessions before continuing. to prevent permission denials${NOATTR}"
 ### Ask for User Prompt
-read -e -p "${GREEN}${BOLD}Please Enter the name to export your backups${NOATTR}: " backup
+read -e -p "${GREEN}${BOLD}Please Enter the name to export your backups: ${NOATTR}" backup
 
 ### Start Backup
-echo ""
 echo "${YELLOW}${BOLD}Backing Up. This may take a few minutes${NOATTR}"
 cd $STATEFUL
 proot --link2symlink -0 tar -zcf $HOME/"$backup".export rootfs >/dev/null 2>&1 || true
 echo "${GREEN}${BOLD}Debian Container exported successfully.${NOATTR}"
-exit 1
 

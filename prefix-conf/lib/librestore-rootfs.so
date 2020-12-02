@@ -9,6 +9,15 @@ NOATTR="$(tput sgr0)"
 
 set -e -u
 
+interrupt(){
+	echo ""
+	echo "${YELLOW}${BOLD}WARNING:${RED} Interrupt Signal Recieved... exiting${NOATTR}"
+    echo ""
+	exit 2
+}
+
+trap 'interrupt' HUP INT QUIT TERM KILL
+
 while true; do
     read -p "${RED}${BOLD}WARNING: Importing rootfs will replace your installation. do you want to continue [y/N] ${NOATTR}" yn
     case $yn in
@@ -33,4 +42,3 @@ rm -rf $STATEFUL/rootfs > /dev/null 2>&1
 echo "${YELLOW}${BOLD}Importing the Container${NOATTR}"
 proot --link2symlink -0 tar -zxf "$backup" -C $STATEFUL >/dev/null 2>&1
 echo "${GREEN}${BOLD}Container successfully imported...${NOATTR}"
-exit 1
