@@ -1,5 +1,5 @@
 Package: debdroid
-Version: 3.04
+Version: 3.04-r2
 Section: Virtualization
 Priority: optional 
 Architecture: all 
