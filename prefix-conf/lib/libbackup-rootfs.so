@@ -11,9 +11,7 @@ NOATTR="$(tput sgr0)"
 set -e -u
 
 interrupt(){
-	echo ""
 	echo "${YELLOW}${BOLD}WARNING:${RED} Interrupt Signal Recieved... exiting${NOATTR}"
-    echo ""
 	exit 2
 }
 
