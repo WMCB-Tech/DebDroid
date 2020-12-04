@@ -1,5 +1,5 @@
 #!/data/data/com.termux/files/usr/bin/bash
-### DEBDROID v3.04-r2.
+### DEBDROID v3.04-r3.
 ### Made By WMCB Tech @wmcbtech30
 ### This script should not be modified at some cases
 ### Dependencies Required
@@ -57,7 +57,7 @@ check-dlcache() {
 		echo ""
 		echo "${GREEN}${BOLD}Existing Image File Found. Skipping Download and Extracting the rootfs${NOATTR}"
 		echo "${GREEN}${BOLD}Unpacking The Base System.... This may take a few minutes${NOATTR}"
-		proot --link2symlink -0 tar -xf $HOME/.cache/dlcache-$flavor.tar.*z --exclude dev -C $ROOTFS
+		proot --link2symlink -0 tar --preserve-permissions --delay-directory-restore -xf $HOME/.cache/dlcache-$flavor.tar.*z --exclude dev -C $ROOTFS >$PREFIX/tmp/debdroid-tar.log 2>&1 || true
 	else
 		echo "${GREEN}${BOLD}Downloading the Debian Image file: ${YELLOW}${flavor}${NOATTR}"
 		echo ""
@@ -65,7 +65,7 @@ check-dlcache() {
 		wget "https://github.com/debuerreotype/docker-debian-artifacts/raw/${archurl}/${flavor}/rootfs.tar.xz" -O $HOME/.cache/dlcache-$flavor.tar.xz &&
 		echo ""
 		echo "${GREEN}${BOLD}Unpacking The Base System.... This may take a few minutes${NOATTR}"
-		proot --link2symlink -0 tar -xf $HOME/.cache/dlcache-$flavor.tar.*z --exclude dev -C $ROOTFS
+		proot --link2symlink -0 tar --preserve-permissions --delay-directory-restore -xf $HOME/.cache/dlcache-$flavor.tar.*z --exclude dev -C $ROOTFS >$PREFIX/tmp/debdroid-tar.log 2>&1 || true
 	fi
 }
 
@@ -115,7 +115,7 @@ show_help(){
 exitcode(){
 	echo ""
 	echo "${RED}Exiting as Requested... Probably Installation Interruption"
-	echo "To fix this. please run ${YELLOW}'debdroid --uninstall'${RED} and rerun the install command again${NOATTR}"
+	echo "To fix this. please run ${YELLOW}debdroid --uninstall${RED} and rerun the install command again${NOATTR}"
 	echo ""
 	exit 2
 }
@@ -129,7 +129,7 @@ check-install-ok() {
 	else
 		rm $ROOTFS/opt/distro-config.sh || true
 		echo "${RED}${BOLD}One or more errors occured during the installation"
-		echo "Possible causes are Incomplete apt install, invalid username or Broken packages in sid/testing"
+		echo "Possible causes are Incomplete Rootfs Download, Incomplete apt install, invalid username or Broken packages in sid/testing"
 		echo ""
 		echo "To correct this problem. Please reinstall it or choose the stable suite${NOATTR}"
 		exit 2
@@ -608,5 +608,5 @@ case "$CMD" in
 	---)
 		parse-cmd-isol "$@"
 		;;
-	*) echo "${RED}Unknown Command: '$CMD' ${NOATTR}"; exit 2;;
+	*) echo "${RED}Unknown Command: $CMD ${NOATTR}"; exit 2;;
 esac
