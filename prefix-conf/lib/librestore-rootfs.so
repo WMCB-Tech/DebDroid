@@ -38,5 +38,5 @@ echo "${YELLOW}${BOLD}Preparing to import...${NOATTR}"
 chmod 777 $STATEFUL/rootfs -R > /dev/null 2>&1 || true
 rm -rf $STATEFUL/rootfs > /dev/null 2>&1
 echo "${YELLOW}${BOLD}Importing the Container${NOATTR}"
-proot --link2symlink -0 tar -zxf "$backup" -C $STATEFUL >/dev/null 2>&1
-echo "${GREEN}${BOLD}Container successfully imported...${NOATTR}"
+proot --link2symlink -0 tar --preserve-permissions --delay-directory-restore -zxf "$backup" -C $STATEFUL >/dev/null 2>&1 || true
+echo "${GREEN}${BOLD}Container successfully imported. You can now start the container${NOATTR}"

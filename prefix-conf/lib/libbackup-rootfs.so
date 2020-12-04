@@ -32,6 +32,6 @@ read -e -p "${GREEN}${BOLD}Please Enter the name to export your backups: ${NOATT
 ### Start Backup
 echo "${YELLOW}${BOLD}Backing Up. This may take a few minutes${NOATTR}"
 cd $STATEFUL
-proot --link2symlink -0 tar -zcf $HOME/"$backup".export rootfs >/dev/null 2>&1 || true
+proot --link2symlink -0 tar --preserve-permissions -zcf $HOME/"$backup".export rootfs >/dev/null 2>&1 || true
 echo "${GREEN}${BOLD}Debian Container exported successfully.${NOATTR}"
 
