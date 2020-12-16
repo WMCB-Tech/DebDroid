@@ -49,17 +49,18 @@ These restrictions may vary if you have custom rom or custom kernel
 Here are common options used to manage the Debian Container,
 .SS Launch Options
 .TP
-.B \f[B]\[em]launch\f[R]
+.B \f[B]\[em]launch\f[R] \f[B]\[em]login\f[R]
 Launches the Debian Container
 .TP
-.B \f[B]\[em]launch\-su\f[R]
+.B \f[B]\[em]launch\-su\f[R] \f[B]\[em]login\-as\-root\f[R]
 Launches the Debian Container as root (aka.
 Maintenance Mode)
 .TP
-.B \f[B]\[em]isolated\f[R]
+.B \f[B]\[em]isolated\f[R] \f[B]\[em]login\-isolated\f[R]
 Launches the Debian Container in an Isolated Instance
 .PP
-To Pass commands with DebDroid, you can use `\[em]' option
+To Pass commands with DebDroid, you can use `\[em]', `\[em]exec' option
+or `\[em]\-', `\[em]exec\-isolated' if isolated
 .PP
 Examples:
 .PD 0
@@ -117,6 +118,9 @@ Exports the container
 .TP
 .B \f[B]\[em]cleanup\-tmp\f[R]
 Cleans up downloaded cache directory
+.TP
+.B \f[B]\[em]status\f[R]
+Check if Debian container is installed
 .TP
 .B \f[B]\[en]h, \[em]help\f[R]
 Shows help
