@@ -26,12 +26,11 @@ apt clean || true
 
 ## Fix Problems
 echo ""
-echo "Setting some walkarounds for Tigervnc"
-echo "export LD_PRELOAD=$(find /usr/lib -name libgcc_s.so.1)" > /etc/profile.d/walkaround.sh
+echo "Setting up Environment Variables"
 echo "Adding /sbin path for non-root users"
-echo "export PATH=/usr/local/bin:/usr/local/sbin:/usr/local/games:/usr/bin:/usr/sbin:/usr/games:/bin:/sbin" > /etc/profile.d/sbin.sh
-echo "export LANG=C.UTF-8" > /etc/profile.d/langenv.sh
-echo "export PULSE_SERVER=127.0.0.1" > /etc/profile.d/pulse.sh
+echo "export PATH=/usr/local/bin:/usr/local/sbin:/usr/local/games:/usr/bin:/usr/sbin:/usr/games:/bin:/sbin" > /etc/profile.d/debdroid-path.sh
+echo "export LANG=C.UTF-8" > /etc/profile.d/debdroid-lang.sh
+echo "export PULSE_SERVER=127.0.0.1" > /etc/profile.d/debdroid-pulseserver.sh
 
 ## Configure udisks2 and dbus as if udisks2 interrupts apt
 echo ""
