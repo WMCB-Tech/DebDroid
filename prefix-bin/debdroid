@@ -1,23 +1,28 @@
 #!/data/data/com.termux/files/usr/bin/bash
-### DEBDROID v3.04-r3.
+### DEBDROID v3.06.
 ### Made By WMCB Tech @wmcbtech30
 ### This script should not be modified at some cases
-### Dependencies Required
+### Dependencies Required for this script to work
 ### proot, tar, wget, dialog, pulseaudio
 ###
 ### Rootfs Hosting - https://github.com/debuerreotype/docker-debian-artifacts
-set -e -u
+
+### Environment Variables
 ROOTFS="$PREFIX/share/debdroid/rootfs"
 CONFIG="$PREFIX/share/debdroid/config"
 PATHBASE="/usr/local/bin:/usr/local/sbin:/usr/local/games:/usr/bin:/usr/sbin:/usr/games:/bin:/sbin"
 STATEFUL="$PREFIX/share/debdroid"
 STATUS="$PREFIX/share/debdroid/rootfs/usr/lib/.libdone.so.9"
+HOST_DISPLAY="$DISPLAY"
 
+### Color Input Environment Variables
 RED="$(tput setaf 1)"
 GREEN="$(tput setaf 2)"
 YELLOW="$(tput setaf 3)"
 BOLD="$(tput bold)"
 NOATTR="$(tput sgr0)"
+
+set -e -u
 
 ## Root Detection
 ## Running This script as root will fail and mess up permissions
@@ -77,21 +82,23 @@ show_help(){
 	echo " --install	Installs an Debian Distribution"
 	echo " --uninstall	Uninstalls a Debian Distribution"
 	echo " --reinstall	Reinstalls a Debian Distribution"
-	echo " --launch	Launches Debian Distribution as Regular User"
-	echo " --launch-su	Launches Debian Distribution as Root"
-	echo " --isolated	Launches Debian Distribution without host storage access"
+	echo " --launch	Launches Debian Distribution as Regular User (alias to --login)"
+	echo " --launch-su	Launches Debian Distribution as Root (alias to --login-as-root)"
+	echo " --isolated	Launches Debian Distribution without host storage access (alias to --login-isolated)"
 	echo " --import	Imports the Debian Container Image"
 	echo " --export	Exports the Debian Container Image"
+	echo " --status	Check if DebDroid is Installed"
 	echo ""
 	echo "To Pass Command within DebDroid. use the '--' option or '---' if isolated"
 	echo "e.g.:"
 	echo "	debdroid -- sudo apt update"
 	echo "	debdroid -- nano"
 	echo "	debdroid --- sudo apt upgrade"
+	echo "Alternatively is to use '--exec' or '--exec-isolated' if running in an isolated instance"
 	echo ""
 	echo "File Sharing Options:"
-	echo " --send		Sends file/folder to user's home directory 'alias to --push'"
-	echo " --recieve	Gets file/folder from the container 'alias to --pull'"
+	echo " --send		Sends file/folder to user's home directory (alias to --push)"
+	echo " --recieve	Gets file/folder from the container (alias to --pull)"
 	echo " --share	Shares Directory through /mnt/shared directory"
 	echo " --unshare	Unshares the Shared Directory"
 	echo ""
@@ -341,6 +348,12 @@ unshare(){
 	rm -rf $ROOTFS/.proot.shareinfo >/dev/null 2>&1 || true
 }
 
+update_display_environment(){
+	cat > $ROOTFS/etc/profile.d/debdroid-host-display.sh <<- EOM
+	export DISPLAY="$HOST_DISPLAY"
+	EOM
+}
+
 launch() {
 	local SHARE_PROPERTIES=""
 	if [ -e $STATUS ]; then
@@ -355,6 +368,7 @@ launch() {
 	fi
 	unset LD_PRELOAD
 	start-pulseaudio
+	update_display_environment
 	proot --link2symlink --kill-on-exit \
 	-0 -r $ROOTFS -p --sysvipc -H -k 4.14.206 \
 	$SHARE_PROPERTIES \
@@ -402,6 +416,7 @@ launch-su() {
 	fi
 	unset LD_PRELOAD
 	start-pulseaudio
+	update_display_environment
 	proot --link2symlink --kill-on-exit \
 	-0 -r $ROOTFS -p --sysvipc -H -k 4.14.206 \
 	$SHARE_PROPERTIES \
@@ -444,6 +459,7 @@ launch-isol() {
 	fi
 	unset LD_PRELOAD
 	start-pulseaudio
+	update_display_environment
 	proot --link2symlink --kill-on-exit \
 	-0 -r $ROOTFS -p --sysvipc -H -k 4.14.206 \
 	-b /dev \
@@ -485,6 +501,7 @@ parse-cmd() {
 		export SHARE_PROPERTIES="$(cat $ROOTFS/.proot.shareinfo)"
 	fi
 	unset LD_PRELOAD
+	update_display_environment
 	proot --link2symlink --kill-on-exit \
 	-0 -r $ROOTFS -p --sysvipc -H -k 4.14.206 \
 	$SHARE_PROPERTIES \
@@ -513,7 +530,7 @@ parse-cmd() {
 	PATH="$PATHBASE" \
 	TMPDIR=/tmp \
 	LANG=C.UTF-8 \
-	sudo -u $(cat $ROOTFS/etc/userinfo.rc) "$@"
+	sudo -i -u $(cat $ROOTFS/etc/userinfo.rc) "$@"
 }
 
 parse-cmd-isol() {
@@ -524,6 +541,7 @@ parse-cmd-isol() {
 		exit 2
 	fi
 	unset LD_PRELOAD
+	update_display_environment
 	proot --link2symlink --kill-on-exit \
 	-0 -r $ROOTFS -p --sysvipc -H -k 4.14.206 \
 	-b /dev \
@@ -547,7 +565,17 @@ parse-cmd-isol() {
 	PATH="$PATHBASE" \
 	TMPDIR=/tmp \
 	LANG=C.UTF-8 \
-	sudo -u $(cat $ROOTFS/etc/userinfo.rc) "$@"
+	sudo -i -u $(cat $ROOTFS/etc/userinfo.rc) "$@"
+}
+
+check_status(){
+	if [ -e $STATUS ]; then
+		echo "${GREEN}${BOLD}Debian Container ${YELLOW}is Installed${NOATTR}"
+		exit 0
+	else
+		echo "${RED}${BOLD}Debian Container ${YELLOW}isn't Installed${NOATTR}"
+		exit 2
+	fi
 }
 
 cleanup-tmp(){
@@ -569,13 +597,13 @@ case "$CMD" in
 	--reinstall)
 		reinstall
 		;;
-	--launch)
+	--launch|--login)
 		launch
 		;;
-	--launch-su)
+	--launch-su|--login-as-root)
 		launch-su
 		;;
-	--isolated)
+	--isolated|--login-isolated)
 		launch-isol
 		;;
 	--cleanup-tmp)
@@ -602,10 +630,13 @@ case "$CMD" in
 	--unshare)
 		unshare
 		;;
-	--)
+	--status)
+		check_status
+		;;
+	--|--exec)
 		parse-cmd "$@"
 		;;
-	---)
+	---|--exec-isolated)
 		parse-cmd-isol "$@"
 		;;
 	*) echo "${RED}Unknown Command: $CMD ${NOATTR}"; exit 2;;
