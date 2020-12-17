@@ -138,5 +138,6 @@ Make an issue if you have problems regarding with this problems
 
 # License
 This uses GPL License as for the open source community
-We value free and open source software on any modification
-And this program comes with no warranty
+And users can modify this source code without my consent
+And freely distribute your modified work from source code
+with this project with or without permissions
