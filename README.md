@@ -135,3 +135,8 @@ If you don't have coding skills. you can file or submit bug reports to help impr
 [YouTube](https://www.youtube.com/wmcbtech) 
 
 Make an issue if you have problems regarding with this problems
+
+# License
+This uses GPL License as for the open source community
+We value free and open source software on any modification
+And this program comes with no warranty
