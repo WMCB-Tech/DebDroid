@@ -32,13 +32,13 @@ Installation is quite easy. follow the steps shown below:
 1.) On termux, Type the following: \
 `pkg update -y`
 
-2.) Download the [DebDroid Debian Package file](https://github.com/WMCB-Tech/DebDroid/releases/tag/v3.04-r3) \
+2.) Download the [DebDroid Debian Package file](https://github.com/WMCB-Tech/DebDroid/releases/tag/v3.06) \
 Older Releases can be found [here](https://github.com/WMCB-Tech/debdroid-archives)
 
 3.) Install the package by typing: \
 `apt install ./path/to/debdroid.deb` \
 I assume that you placed the downloaded file to downloads folder \
-and the `./path/to` is where the location of your file. copy-pasting steps is not cool
+and the `./path/to` is where the location of your file.
 
 # Preparing The Container
 After all packages is installed. you can install it by typing: \
