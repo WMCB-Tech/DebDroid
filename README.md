@@ -12,7 +12,7 @@ DebDroid makes Linux Software integration to Android possible we made linux soft
 well-integrated as possible. although this might be a messy technique but it makes the work done easily
 
 > There's innovation in Linux. There are some really good technical features that I'm proud of. There are capabilities in Linux that aren't in other operating systems
-- Linus Torvalds
+ -- Linus Torvalds
 
 
 # Features
