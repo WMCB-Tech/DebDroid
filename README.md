@@ -11,7 +11,7 @@ Well it's a little brush off to other proot methods out there like andronix whic
 DebDroid makes Linux Software integration to Android possible we made linux software work pre-fixed without patches and makes the containerization secure and
 well-integrated as possible. although this might be a messy technique but it makes the work done easily
 
-> There's innovation in Linux. There are some really good technical features that I'm proud of. There are capabilities in Linux that aren't in other operating systems
+> There's innovation in Linux. There are some really good technical features that I'm proud of. There are capabilities in Linux that aren't in other operating systems \
  -- Linus Torvalds
 
 
