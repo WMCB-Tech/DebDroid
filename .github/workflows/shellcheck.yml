@@ -7,6 +7,10 @@ on:
 
 name: ShellCheck
 
+jobs:
+  docker-job:
+    runs-on: ubuntu-latest
+
 ...
 - name: ShellCheck
   uses: ludeeus/action-shellcheck@1.0.0
