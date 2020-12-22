@@ -14,7 +14,7 @@ jobs:
 ...
 - name: ShellCheck
   uses: ludeeus/action-shellcheck@1.0.0
-  runs-on: ubuntu-latest
+### Steps For The Job
   steps:
     - uses: actions/checkout@v2
     - name: Check for Shell Scripting Syntax Errors
