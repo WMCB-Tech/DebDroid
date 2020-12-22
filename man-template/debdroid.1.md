@@ -34,16 +34,16 @@ These restrictions may vary if you have custom rom or custom kernel
 Here are common options used to manage the Debian Container,
 
 ## Launch Options
-**---launch**
+**---launch** **---login**
 : Launches the Debian Container
 
-**---launch-su**
+**---launch-su** **---login-as-root**
 : Launches the Debian Container as root (aka. Maintenance Mode)
 
-**---isolated**
+**---launch-isolated** **---isolated** **---login-isolated**
 : Launches the Debian Container in an Isolated Instance
 
-To Pass commands with DebDroid, you can use '---' option
+To Pass commands with DebDroid, you can use '---', '---exec' option or '----', '----exec-isolated' if isolated
 
 Examples: \
 **debdroid --- sudo apt install vim** \
@@ -66,12 +66,6 @@ To install other suite (unstable, oldstable, testing) You can specify it by typi
 : Reinstalls the Debian Container
 
 ## File Sharing Options
-**---share [directory],**
-: Shares the directory through '/mnt/shared'
-
-**---unshare**
-: Unshares the shared directory
-
 **---send [file], ---push [file]**
 : Sends the file through your home directory
 
@@ -88,8 +82,14 @@ To install other suite (unstable, oldstable, testing) You can specify it by typi
 **---cleanup-tmp**
 : Cleans up downloaded cache directory
 
+**---status**
+: Check if Debian Container is Installed
+
 **--h, ---help**
 : Shows help
+
+If you need to use Termux Home directory as Home Directory \
+Specify **DEBDROID_BIND_HOME=y** Environment Variable
 
 # BUGS
 If you encounter bugs to this project, you can file a bug report to: \
