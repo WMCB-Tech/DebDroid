@@ -1,5 +1,5 @@
 #!/data/data/com.termux/files/usr/bin/bash
-### DEBDROID v3.06.
+### DEBDROID v3.06-r2.
 ### Made By WMCB Tech @wmcbtech30
 ### This script should not be modified at some cases
 ### Dependencies Required for this script to work
@@ -14,6 +14,7 @@ PATHBASE="/usr/local/bin:/usr/local/sbin:/usr/local/games:/usr/bin:/usr/sbin:/us
 STATEFUL="$PREFIX/share/debdroid"
 STATUS="$PREFIX/share/debdroid/rootfs/usr/lib/.libdone.so.9"
 HOST_DISPLAY="$DISPLAY"
+DEBDROID_BIND_HOME="$DEBDROID_BIND_HOME"
 
 ### Color Input Environment Variables
 RED="$(tput setaf 1)"
@@ -28,15 +29,15 @@ set -e -u
 ## Running This script as root will fail and mess up permissions
 ## And Prevent this script to run inside fakeroot also
 if [[ $EUID -eq 0 ]]; then
-  echo "${RED}${BOLD}This script should not be run as ROOT. please use linux deploy instead${NOATTR}" 1>&2
-  exit 1
+	echo "${RED}${BOLD}This script should not be run as ROOT. please use linux deploy instead${NOATTR}" 1>&2
+	exit 1
 fi
 
 check-network-connectivity(){
 	if ping -q -c 1 -W 1 8.8.8.8 >/dev/null 2>&1; then
-  		exec
+		exec
 	else
-  		echo "${RED}${BOLD}Cannot connect to network. Try Checking your network connection. Aborting exit code 2${NOATTR}"
+		echo "${RED}${BOLD}Cannot connect to network. Try Checking your network connection. Aborting exit code 2${NOATTR}"
 		exit 2
 	fi
 }
@@ -79,33 +80,36 @@ show_help(){
 	echo ""
 	echo "Usage: debdroid [command]"
 	echo ""
-	echo " --install	Installs an Debian Distribution"
-	echo " --uninstall	Uninstalls a Debian Distribution"
-	echo " --reinstall	Reinstalls a Debian Distribution"
-	echo " --launch	Launches Debian Distribution as Regular User (alias to --login)"
-	echo " --launch-su	Launches Debian Distribution as Root (alias to --login-as-root)"
-	echo " --isolated	Launches Debian Distribution without host storage access (alias to --login-isolated)"
-	echo " --import	Imports the Debian Container Image"
-	echo " --export	Exports the Debian Container Image"
-	echo " --status	Check if DebDroid is Installed"
+	echo " ${YELLOW}--install	${GREEN}Installs an Debian Distribution"
+	echo " ${YELLOW}--uninstall	${GREEN}Uninstalls a Debian Distribution"
+	echo " ${YELLOW}--reinstall	${GREEN}Reinstalls a Debian Distribution"
+	echo " ${YELLOW}--launch	${GREEN}Launches Debian Distribution as Regular User (alias to ${YELLOW}--login${GREEN})"
+	echo " ${YELLOW}--launch-su	${GREEN}Launches Debian Distribution as Root (alias to ${YELLOW}--login-as-root${GREEN})"
+	echo " ${YELLOW}--isolated	${GREEN}Launches Debian Distribution without host storage access (alias to ${YELLOW}--launch-isolated${GREEN} or ${YELLOW}--login-isolated${GREEN})"
+	echo " ${YELLOW}--import	${GREEN}Imports the Debian Container Image"
+	echo " ${YELLOW}--export	${GREEN}Exports the Debian Container Image"
+	echo " ${YELLOW}--status	${GREEN}Check if DebDroid is Installed"
 	echo ""
 	echo "To Pass Command within DebDroid. use the '--' option or '---' if isolated"
 	echo "e.g.:"
-	echo "	debdroid -- sudo apt update"
+	echo "	${YELLOW}debdroid -- sudo apt update"
 	echo "	debdroid -- nano"
-	echo "	debdroid --- sudo apt upgrade"
-	echo "Alternatively is to use '--exec' or '--exec-isolated' if running in an isolated instance"
+	echo "	debdroid --- sudo apt upgrade${GREEN}"
+	echo ""
+	echo "Alternatively is to use ${YELLOW}--exec${GREEN} or ${YELLOW}--exec-isolated${GREEN} if running in an isolated instance"
 	echo ""
 	echo "File Sharing Options:"
-	echo " --send		Sends file/folder to user's home directory (alias to --push)"
-	echo " --recieve	Gets file/folder from the container (alias to --pull)"
-	echo " --share	Shares Directory through /mnt/shared directory"
-	echo " --unshare	Unshares the Shared Directory"
+	echo " ${YELLOW}--send		${GREEN}Sends file/folder to user's home directory (alias to ${YELLOW}--push${GREEN})"
+	echo " ${YELLOW}--recieve	${GREEN}Gets file/folder from the container (alias to ${YELLOW}--pull${GREEN})"
 	echo ""
 	echo "Sharing Examples: "
-	echo "	debdroid --send /sdcard/code.py"
-	echo "	debdroid --share ~/directory"
+	echo "	${YELLOW}debdroid --send /sdcard/code.py"
 	echo "	debdroid --recieve /opt/code.py"
+	echo "	debdroid --pull /etc/profits/pygtk.c${GREEN}"
+	echo "Pushed files will be placed on your home directory by default"
+	echo ""
+	echo "If you need to use Termux Home as Home Directory"
+	echo "Specify ${YELLOW}DEBDROID_BIND_HOME=y${GREEN} Environment Variable"
 	echo ""
 	echo "Supported Distributions: "
 	echo "${YELLOW}${BOLD}unstable/sid, stable/buster oldstable/stretch testing/bullseye"
@@ -115,8 +119,6 @@ show_help(){
 	echo ""
 	echo "${GREEN}${BOLD}If No Suite is specified. then it will install the stable one"
 	echo "NOTE: Sid/Testing Versions may tend to fail the installation${NOATTR}"
-	echo ""
-	exit 2
 }
 
 exitcode(){
@@ -280,35 +282,8 @@ send() {
 	fi
 	### Send files
 	echo "${YELLOW}${BOLD}Sending File: $SEND_ARGS ${NOATTR}"
-	cp -r "$SEND_ARGS" $ROOTFS/home/$(cat $ROOTFS/etc/userinfo.rc)/ >/dev/null 2>&1 || true
-	echo "${GREEN}${BOLD}The File $SEND_ARGS successfully sent at your Home Directory${NOATTR}"
-}
-
-share() {
-	SHARE_ARGS="$@"
-	if [ -e $STATUS ]; then
-    	:
-	else
-		echo "${RED}${BOLD}Cannot stat Debian Container. Please install it using ${YELLOW}debdroid --install${NOATTR}"
-		exit 2
-	fi
-	### Ask for Directory
-	if [ ! -z "$SHARE_ARGS" ]; then
-		:
-	else
-		echo "${RED}${BOLD}Please Specify a Directory to Share${NOATTR}"
-		exit 2
-	fi
-	### Check if a directory is specified else abort
-	if [ ! -d "$SHARE_ARGS" ]; then
-		echo "${RED}${BOLD}Cannot Apply Share Properties. either you're trying to share a non-directory or directory isn't exists${NOATTR}"
-		exit 2
-	fi
-	### Share Directory
-	echo "${YELLOW}${BOLD}Applying Share Properties${NOATTR}"
-	echo "-b $(realpath $SHARE_ARGS):/mnt/shared" > $ROOTFS/.proot.shareinfo
-	echo "${GREEN}${BOLD}The Directory $SHARE_ARGS is now shared and located at /mnt/shared. you can unshare it by typing:"
-	echo "debdroid --unshare${NOATTR}"
+	cp -rf "$SEND_ARGS" $ROOTFS/home/$(cat $ROOTFS/etc/userinfo.rc)/ >/dev/null 2>&1 || true
+	echo "${GREEN}${BOLD}The File "$SEND_ARGS" successfully sent at your Home Directory${NOATTR}"
 }
 
 recieve(){
@@ -334,18 +309,7 @@ recieve(){
 	fi
 	### Pull Files
 	echo "${YELLOW}${BOLD}Pulling $RECIEVE_ARGS...${NOATTR}" 
-	cp -rf ${ROOTFS}${RECIEVE_ARGS} $PWD >/dev/null 2>&1 || true
-}
-
-unshare(){
-	if [ -e $STATUS ]; then
-		:
-	else
-		echo "${RED}${BOLD}Cannot stat Debian Container. Please install it using ${YELLOW}debdroid --install${NOATTR}"
-		exit 2
-	fi
-	### Simply delete the metadata
-	rm -rf $ROOTFS/.proot.shareinfo >/dev/null 2>&1 || true
+	cp -rf "${ROOTFS}${RECIEVE_ARGS}" "$PWD" >/dev/null 2>&1 || true
 }
 
 update_display_environment(){
@@ -362,16 +326,18 @@ launch() {
 		echo "${RED}${BOLD}Cannot start Debian Container. Please install it using ${YELLOW}debdroid --install${NOATTR}"
 		exit 2
 	fi
-	### Check for Extra Shares
-	if [ -e $ROOTFS/.proot.shareinfo ]; then
-		export SHARE_PROPERTIES="$(cat $ROOTFS/.proot.shareinfo)"
+	### Check if DEBDROID_BIND_HOME is specified
+	if [ "$DEBDROID_BIND_HOME" == "y" ]; then
+		export CONFIG_BIND_HOME=" -b $HOME:/home/$(cat $ROOTFS/etc/userinfo.rc) -b $HOME:/root "
+	else
+		export CONFIG_BIND_HOME=""
 	fi
 	unset LD_PRELOAD
 	start-pulseaudio
 	update_display_environment
 	proot --link2symlink --kill-on-exit \
 	-0 -r $ROOTFS -p -H -k 4.14.206 \
-	$SHARE_PROPERTIES \
+	$CONFIG_BIND_HOME \
 	-b /dev \
 	-b /proc \
 	-b /sys \
@@ -388,7 +354,7 @@ launch() {
 	-b $ROOTFS/proc/vmstat:/proc/vmstat \
 	-b $ROOTFS/proc/loadavg:/proc/loadavg \
 	-b /storage/emulated/0:/sdcard \
-	-b /:/host-rootfs \
+	-b /:/host-rootfs -b /system -b /data -b /storage \
 	-w /root \
 	/usr/bin/env -i \
 	TERM=xterm-256color \
@@ -410,16 +376,18 @@ launch-su() {
 		echo "${RED}${BOLD}Cannot start Debian Container. Please install it using ${YELLOW}debdroid --install${NOATTR}"
 		exit 2
 	fi
-	### Check for Extra Shares
-	if [ -e $ROOTFS/.proot.shareinfo ]; then
-		export SHARE_PROPERTIES="$(cat $ROOTFS/.proot.shareinfo)"
+	### Check if DEBDROID_BIND_HOME is specified
+	if [ "$DEBDROID_BIND_HOME" == "y" ]; then
+		export CONFIG_BIND_HOME=" -b $HOME:/home/$(cat $ROOTFS/etc/userinfo.rc) -b $HOME:/root "
+	else
+		export CONFIG_BIND_HOME=""
 	fi
 	unset LD_PRELOAD
 	start-pulseaudio
 	update_display_environment
 	proot --link2symlink --kill-on-exit \
 	-0 -r $ROOTFS -p -H -k 4.14.206 \
-	$SHARE_PROPERTIES \
+	$CONFIG_BIND_HOME \
 	-b /dev \
 	-b /proc \
 	-b /sys \
@@ -436,7 +404,7 @@ launch-su() {
 	-b $ROOTFS/proc/vmstat:/proc/vmstat \
 	-b $ROOTFS/proc/loadavg:/proc/loadavg \
 	-b /storage/emulated/0:/sdcard \
-	-b /:/host-rootfs \
+	-b /:/host-rootfs -b /system -b /data -b /storage \
 	-w /root \
 	/usr/bin/env -i \
 	TERM=xterm-256color \
@@ -496,15 +464,17 @@ parse-cmd() {
 		echo "${RED}${BOLD}Cannot start Debian Container. Please install it using ${YELLOW}debdroid --install${NOATTR}"
 		exit 2
 	fi
-	### Check for Extra Shares
-	if [ -e $ROOTFS/.proot.shareinfo ]; then
-		export SHARE_PROPERTIES="$(cat $ROOTFS/.proot.shareinfo)"
+	### Check if DEBDROID_BIND_HOME is specified
+	if [ "$DEBDROID_BIND_HOME" == "y" ]; then
+		export CONFIG_BIND_HOME=" -b $HOME:/home/$(cat $ROOTFS/etc/userinfo.rc) -b $HOME:/root "
+	else
+		export CONFIG_BIND_HOME=""
 	fi
 	unset LD_PRELOAD
 	update_display_environment
 	proot --link2symlink --kill-on-exit \
 	-0 -r $ROOTFS -p -H -k 4.14.206 \
-	$SHARE_PROPERTIES \
+	$CONFIG_BIND_HOME \
 	-b /dev \
 	-b /proc \
 	-b /sys \
@@ -521,8 +491,8 @@ parse-cmd() {
 	-b $ROOTFS/proc/vmstat:/proc/vmstat \
 	-b $ROOTFS/proc/loadavg:/proc/loadavg \
 	-b /storage/emulated/0:/sdcard \
-	-b /:/host-rootfs \
-	-w /home/$(cat $ROOTFS/etc/userinfo.rc) \
+	-b /:/host-rootfs -b /system -b /data -b /storage \
+	-w /root \
 	/usr/bin/env -i \
 	TERM=xterm-256color \
 	HOME=/root \
@@ -557,7 +527,7 @@ parse-cmd-isol() {
 	-b $ROOTFS/proc/uptime:/proc/uptime \
 	-b $ROOTFS/proc/vmstat:/proc/vmstat \
 	-b $ROOTFS/proc/loadavg:/proc/loadavg \
-	-w /home/$(cat $ROOTFS/etc/userinfo.rc) \
+	-w /root \
 	/usr/bin/env -i \
 	TERM=xterm-256color \
 	HOME=/root \
@@ -571,6 +541,7 @@ parse-cmd-isol() {
 check_status(){
 	if [ -e $STATUS ]; then
 		echo "${GREEN}${BOLD}Debian Container ${YELLOW}is Installed${NOATTR}"
+		echo "${GREEN}${BOLD}Debian Version: ${YELLOW}$(cat $ROOTFS/.proot.distinfo)${NOATTR}"
 		exit 0
 	else
 		echo "${RED}${BOLD}Debian Container ${YELLOW}isn't Installed${NOATTR}"
@@ -584,6 +555,7 @@ cleanup-tmp(){
 
 if [ $# = 0 ]; then
 	show_help
+	exit 2
 fi
 
 CMD="$1"
@@ -603,7 +575,7 @@ case "$CMD" in
 	--launch-su|--login-as-root)
 		launch-su
 		;;
-	--isolated|--login-isolated)
+	--launch-isolated|--isolated|--login-isolated)
 		launch-isol
 		;;
 	--cleanup-tmp)
@@ -623,12 +595,6 @@ case "$CMD" in
 		;;
 	--recieve|--pull)
 		recieve "$@"
-		;;
-	--share)
-		share "$@"
-		;;
-	--unshare)
-		unshare
 		;;
 	--status)
 		check_status
