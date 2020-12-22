@@ -7,16 +7,15 @@ on:
 
 name: ShellCheck
 
-jobs:
-  docker-job:
-    runs-on: ubuntu-latest
-
 ...
 - name: ShellCheck
   uses: ludeeus/action-shellcheck@1.0.0
-### Steps For The Job
-  steps:
-    - uses: actions/checkout@v2
-    - name: Check for Shell Scripting Syntax Errors
-      uses: ludeeus/action-shellcheck@master
+
+jobs:
+  docker-job:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Check for Shell Scripting Syntax Errors
+        uses: ludeeus/action-shellcheck@master
       
