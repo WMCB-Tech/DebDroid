@@ -1,0 +1,12 @@
+# This is a basic workflow to help you get started with Actions
+
+name: ShellCheck
+
+...
+- name: ShellCheck
+  uses: ludeeus/action-shellcheck@1.0.0
+  runs-on: ubuntu-latest
+  steps:
+    - uses: actions/checkout@v2
+    - name: Check for Shell Scripting Syntax Errors
+      uses: ludeeus/action-shellcheck@master
