@@ -29,6 +29,12 @@ echo "${RED}${BOLD}NOTICE: Please close all your sessions before continuing. to 
 ### Ask for User Prompt
 read -e -p "${GREEN}${BOLD}Please Enter the name to export your backups: ${NOATTR}" backup
 
+### Check if a Backup Name is specified
+if [ -z "$backup" ]; then
+    echo "${RED}${BOLD}Please Enter the name of your backup! Aborting Exit Code 2...${NOATTR}"
+    exit 2
+fi
+
 ### Start Backup
 echo "${YELLOW}${BOLD}Backing Up. This may take a few minutes${NOATTR}"
 cd $STATEFUL
