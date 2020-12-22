@@ -1,5 +1,10 @@
 # This is a basic workflow to help you get started with Actions
 
+on:
+  push:
+    branch:
+      - master
+
 name: ShellCheck
 
 ...
@@ -10,3 +15,4 @@ name: ShellCheck
     - uses: actions/checkout@v2
     - name: Check for Shell Scripting Syntax Errors
       uses: ludeeus/action-shellcheck@master
+      
