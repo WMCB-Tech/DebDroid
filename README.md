@@ -1,15 +1,14 @@
 # DebDroid
 An Easy to use Debian Installer for Termux on Android without root
 
-[![Discord](https://img.shields.io/discord/591914197219016707.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://bit.ly/WMCBDiscord)
+[![Discord](https://img.shields.io/discord/591914197219016707.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://bit.ly/WMCBDiscord) [![made-with-bash](https://img.shields.io/badge/Made%20with-Bash-1f425f.svg)](https://www.gnu.org/software/bash/) [![made-for-VSCode](https://img.shields.io/badge/Made%20for-VSCode-1f425f.svg)](https://code.visualstudio.com/) 
 
-Learn more about DebDroid with this [wiki](https://github.com/WMCB-Tech/DebDroid/wiki) \
-***Updates in DebDroid are Frequent and it's recommended to watch this repo to get latest updates. We provide pre-releases but it's intended for Developers only. pre-releases can be deleted anytime***
 
 # What is DebDroid?
-Well it's a little brush off to other proot methods out there like andronix which it's good but poorly aware of the fact of Android Restrictions.
-DebDroid makes Linux Software integration to Android possible we made linux software work pre-fixed without patches and makes the containerization secure and
-well-integrated as possible. although this might be a messy technique but it makes the work done easily
+A Debian Installer for Android Supporting (Sid, Testing, Stable, Oldstable) flavours And No Rooting Required \
+Unleash your Android Device's power and Expand the Packages you need for your Device with Limitations Guaranteed 
+
+Learn more about DebDroid with this [wiki](https://github.com/WMCB-Tech/DebDroid/wiki)
 
 > There's innovation in Linux. There are some really good technical features that I'm proud of. There are capabilities in Linux that aren't in other operating systems \
  -- Linus Torvalds
@@ -17,7 +16,7 @@ well-integrated as possible. although this might be a messy technique but it mak
 
 # Features
 * Support for Root and Non-root User Accounts
-* Run your Favorite Linux IDE's, Apps, Utilities Easily
+* Run your Favorite Linux IDE's, Apps, Utilities Easily and Seamlessly
 * Run your Local Servers easily using SSH, Node, FTP, and more
 * Backup and Restore Feature
 * Supports Desktop Environments (LXDE, LXQT, Mate, XFCE)
@@ -28,15 +27,15 @@ well-integrated as possible. although this might be a messy technique but it mak
 Installation is quite easy. follow the steps shown below:
 
 **Requirements:**
-* 1.2gb of free space
-* Stable Internet Connection (The installation is sensitive to network failures)
-* Termux (Latest Version is recommended)
+* 1.1gb of free space
+* Stable Internet Connection
+* Termux (duh)
 * Root Disabled (Running as root will fail)
 
 1.) On termux, Type the following: \
 `pkg update -y`
 
-2.) Download the [DebDroid Debian Package file](https://github.com/WMCB-Tech/DebDroid/releases/tag/v3.06) \
+2.) Download the [DebDroid Debian Package file](https://github.com/WMCB-Tech/DebDroid/releases/tag/v3.06-r2) \
 Older Releases can be found [here](https://github.com/WMCB-Tech/debdroid-archives)
 
 3.) Install the package by typing: \
@@ -76,11 +75,6 @@ The Installation will take several minutes depending on your network connection
 
 If it asks you to enter your UNIX Username. you can type your own username to add it to sudoers \
 to gain access via sudo.
-
-***Note:***
-* Names should not contain any Capital Letters and special characters including spaces
-* Names should not be used: \
- root, proc, dev, mail, sys and other linux reserved names as if the installation is sensitive,
  
  # Starting The Container
  You can start the container by typing: \
@@ -106,8 +100,6 @@ You can use this for using Git version of DebDroid but the dependencies would no
 
 **Packaging** \
 To package your own debdroid. simply package the directory with `dpkg-deb`
-
-P.S. Used VS Code for development
 
 # Contributing
 You can help this project by contributing. (if you have bash scripting skills) and help DebDroid Strong 
