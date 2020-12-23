@@ -73,23 +73,30 @@ Ubuntu/Kali is unsupported
 
 The Installation will take several minutes depending on your network connection
 
-If it asks you to enter your UNIX Username. you can type your own username to add it to sudoers \
-to gain access via sudo.
+During the Installation Process, it will ask you for the Configuration
+
+#### TZData Configuration
+![tzdata_config](https://github.com/WMCB-Tech/DebDroid/blob/master/Resources/Android%207.1-2020-12-23-14-58-38.png)
+
+#### Username Configuration
+![username_config](https://github.com/WMCB-Tech/DebDroid/blob/master/Resources/Android%207.1-2020-12-23-15-00-08.png)
+
+# Starting The Container
+You can start the container by typing: \
+```debdroid --launch``` or ```debdroid --launch-su``` (as root user)
+
+and it should drop you to debian shell something like this: \
+![loginshell](https://github.com/WMCB-Tech/DebDroid/blob/master/Resources/Android%207.1-2020-12-23-15-02-52.png)
+
  
- # Starting The Container
- You can start the container by typing: \
- ```debdroid --launch``` or ```debdroid --launch-su``` (as root user)
+To Shutdown the linux environment. simply type `exit` to debian shell \
+Note that it will kill all processes at exit to prevent battery drainage
  
- and it should drop you to debian shell
+# Uninstalling the Container
+Uninstalling is simple. simply type: \
+`debdroid --uninstall`
  
- To Shutdown the linux environment. simply type `exit` to debian shell \
- Note that it will kill all processes at exit to prevent battery drainage
- 
- # Uninstalling the Container
- Uninstalling is simple. simply type: \
- `debdroid --uninstall`
- 
- Note that instead of asking you to delete it. you have 10 seconds before the removal so better to hit Ctrl-C before it's too late
+Note that instead of asking you to delete it. you have 10 seconds before the removal so better to hit Ctrl-C before it's too late
 
 # Development
 On the Releases page. you will see some tarballs can be packaged with `dpkg-deb` which it designed to make your own DebDroid-Based projects
