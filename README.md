@@ -101,6 +101,9 @@ You can use this for using Git version of DebDroid but the dependencies would no
 **Packaging** \
 To package your own debdroid. simply package the directory with `dpkg-deb`
 
+More Information: \
+https://github.com/WMCB-Tech/DebDroid/wiki/Development
+
 # Contributing
 You can help this project by contributing. (if you have bash scripting skills) and help DebDroid Strong 
 
