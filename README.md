@@ -8,7 +8,7 @@ An Easy to use Debian Installer for Termux on Android without root
 A Debian Installer for Android Supporting (Sid, Testing, Stable, Oldstable) flavours And No Rooting Required \
 Unleash your Android Device's power and Expand the Packages you need for your Device with Limitations Guaranteed 
 
-Learn more about DebDroid with this [wiki](https://github.com/WMCB-Tech/DebDroid/wiki)
+Learn more about DebDroid with this ▶ [wiki](https://github.com/WMCB-Tech/DebDroid/wiki) ◀
 
 > There's innovation in Linux. There are some really good technical features that I'm proud of. There are capabilities in Linux that aren't in other operating systems \
  -- Linus Torvalds
