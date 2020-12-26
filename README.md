@@ -98,6 +98,9 @@ Uninstalling is simple. simply type: \
  
 Note that instead of asking you to delete it. you have 10 seconds before the removal so better to hit Ctrl-C before it's too late
 
+# Installing Desktop Environment
+With [DebDroid DE Installer](https://github.com/WMCB-Tech/debdroid-de-installer) plugin. you can install desktop environment and launch it there, it will open a VNC Viewer app and launches the linux desktop environment
+
 # Development
 On the Releases page. you will see some tarballs can be packaged with `dpkg-deb` which it designed to make your own DebDroid-Based projects
 
