@@ -1,5 +1,5 @@
 #!/data/data/com.termux/files/usr/bin/bash
-### DEBDROID v3.06-r2.
+### DEBDROID v3.08.
 ### Made By WMCB Tech @wmcbtech30
 ### This script should not be modified at some cases
 ### Dependencies Required for this script to work
@@ -183,6 +183,8 @@ install-debian() {
 	install $CONFIG/libhosts.so $ROOTFS/etc/hosts &&
 	install $CONFIG/libdone.so.9 $ROOTFS/usr/lib/.libdone.so.9 &&
 	install -m 755 $CONFIG/distro-config.sh $ROOTFS/opt/distro-config.sh &&
+	mkdir $ROOTFS/proc/sys/kernel -p &&
+	echo "0" > $ROOTFS/proc/sys/kernel/cap_last_cap &&
 	echo "$flavor" > $ROOTFS/.proot.distinfo &&
 	check-install-ok
 }
@@ -233,6 +235,8 @@ reinstall() {
 	install $CONFIG/libdone.so.9 $ROOTFS/usr/lib/.libdone.so.9 &&
 	install -m 755 $CONFIG/distro-config.sh $ROOTFS/opt/distro-config.sh &&
 	echo "$flavor" > $ROOTFS/.proot.distinfo &&
+	mkdir $ROOTFS/proc/sys/kernel -p &&
+	echo "0" > $ROOTFS/proc/sys/kernel/cap_last_cap &&
 	check-install-ok
 }
 
@@ -353,6 +357,7 @@ launch() {
 	-b $ROOTFS/proc/uptime:/proc/uptime \
 	-b $ROOTFS/proc/vmstat:/proc/vmstat \
 	-b $ROOTFS/proc/loadavg:/proc/loadavg \
+	-b $ROOTFS/proc/sys/kernel/cap_last_cap:/proc/sys/kernel/cap_last_cap \
 	-b /storage/emulated/0:/sdcard \
 	-b /:/host-rootfs -b /system -b /data -b /storage \
 	-w /root \
@@ -403,6 +408,7 @@ launch-su() {
 	-b $ROOTFS/proc/uptime:/proc/uptime \
 	-b $ROOTFS/proc/vmstat:/proc/vmstat \
 	-b $ROOTFS/proc/loadavg:/proc/loadavg \
+	-b $ROOTFS/proc/sys/kernel/cap_last_cap:/proc/sys/kernel/cap_last_cap \
 	-b /storage/emulated/0:/sdcard \
 	-b /:/host-rootfs -b /system -b /data -b /storage \
 	-w /root \
@@ -443,6 +449,7 @@ launch-isol() {
 	-b $ROOTFS/proc/uptime:/proc/uptime \
 	-b $ROOTFS/proc/vmstat:/proc/vmstat \
 	-b $ROOTFS/proc/loadavg:/proc/loadavg \
+	-b $ROOTFS/proc/sys/kernel/cap_last_cap:/proc/sys/kernel/cap_last_cap \
 	-w /root \
 	/usr/bin/env -i \
 	TERM=xterm-256color \
@@ -490,6 +497,7 @@ parse-cmd() {
 	-b $ROOTFS/proc/uptime:/proc/uptime \
 	-b $ROOTFS/proc/vmstat:/proc/vmstat \
 	-b $ROOTFS/proc/loadavg:/proc/loadavg \
+	-b $ROOTFS/proc/sys/kernel/cap_last_cap:/proc/sys/kernel/cap_last_cap \
 	-b /storage/emulated/0:/sdcard \
 	-b /:/host-rootfs -b /system -b /data -b /storage \
 	-w /root \
@@ -527,6 +535,7 @@ parse-cmd-isol() {
 	-b $ROOTFS/proc/uptime:/proc/uptime \
 	-b $ROOTFS/proc/vmstat:/proc/vmstat \
 	-b $ROOTFS/proc/loadavg:/proc/loadavg \
+	-b $ROOTFS/proc/sys/kernel/cap_last_cap:/proc/sys/kernel/cap_last_cap \
 	-w /root \
 	/usr/bin/env -i \
 	TERM=xterm-256color \
