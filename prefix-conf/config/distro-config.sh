@@ -18,7 +18,7 @@ rm -rf /etc/apt/apt.conf.d/docker-* >/dev/null 2>&1 || true
 apt update
 apt upgrade -y || true
 apt install -f -y || true
-apt install nano sudo busybox udisks2 dbus-x11 locales pulseaudio procps tzdata dialog --no-install-recommends --no-install-suggests -y || true
+apt install nano sudo busybox locales pulseaudio procps tzdata dialog --no-install-recommends --no-install-suggests -y || true
 apt install -f -y || true
 dpkg --configure -a || true
 apt autoremove -y || true
@@ -37,8 +37,8 @@ echo "$(cat /.proot.distinfo)" > /etc/debian_chroot
 ## Configure Packages
 echo ""
 echo "Configuring Packages... "
-echo "" > /var/lib/dpkg/info/udisks2.postinst
-echo "" > /var/lib/dpkg/info/dbus.postinst
+install -m 755 /dev/null /usr/local/bin/dpkg-statoverride
+install -m 755 /dev/null /usr/local/bin/udevadm
 dpkg --configure -a
 dpkg-reconfigure tzdata || true
 
@@ -46,8 +46,8 @@ dpkg-reconfigure tzdata || true
 echo "Configuring User Accounts.... "
 username=$(dialog --title "Finish Debian Setup" --nocancel --inputbox "Enter your desired username for your default user account" 9 40 3>&1 1>&2 2>&3 3>&- )
 useradd -s /bin/bash -m $username
-echo ""
-passwd $username
+password=$(dialog --title "Finish Debian Setup" --nocancel --insecure --passwordbox "Enter your password for your default user account" 9 40 3>&1 1>&2 2>&3 3>&- )
+echo $username:$password | chpasswd 
 echo "Adding the user to sudoers for sudo access"
 echo "$username ALL=(ALL:ALL) NOPASSWD:ALL" > /etc/sudoers.d/$username
 echo "$username" > /etc/userinfo.rc
@@ -58,6 +58,5 @@ which ps >/dev/null 2>&1
 which sudo >/dev/null 2>&1
 which busybox >/dev/null 2>&1
 which pulseaudio >/dev/null 2>&1
-which dbus-launch >/dev/null 2>&1
 which nano >/dev/null 2>&1
 which dialog >/dev/null 2>&1
