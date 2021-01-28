@@ -1,5 +1,5 @@
 # Major Update Notice
-DebDroid will soon switch to `rlchroot` as backend, see \
+DebDroid will soon switch to `rlchroot` as backend, see
 * https://github.com/WMCB-Tech/DebDroid/projects
 * https://github.com/WMCB-Tech/DebDroid/issues/25
 
