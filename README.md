@@ -1,9 +1,8 @@
 # Major Update Notice
-DebDroid will soon switch to `rlchroot` as backend, see
-* https://github.com/WMCB-Tech/DebDroid/projects
-* https://github.com/WMCB-Tech/DebDroid/issues/25
+DebDroid is moved to a new repository
+* https://github.com/WMCB-Tech/debdroid-ng
 
-Soon, DebDroid will switch to `rlchroot` but a cost of user experience
+I'm not accepting issues here anymore
 
 # DebDroid
 An Easy to use Debian Installer for Termux on Android without root
